@@ -10,6 +10,11 @@ This software is licensed under the GNU Lesser General Public License v3.0.
 
 ## Changelog
 
+### Version 5.4.2
+
+* Added support for Zabbix 5.0 and 5.2
+* Non-functional menu entry for non-superadmins is now hidden
+
 ### Version 5.0.2
 
 * Added support for templates
@@ -24,7 +29,7 @@ This software is licensed under the GNU Lesser General Public License v3.0.
 
 ## Requirements
 
-- Zabbix 5.4
+- Zabbix 5.0 to 5.4
 - File write access to the Zabbix frontend server
 - Super admin permissions for the Zabbix users that want to use the frontend module
 
@@ -63,5 +68,5 @@ Additional hints:
 * The columns must be in the first line of the CSV file.
 * The separator character must be ";".
 
-The CSV file can then imported in the same menu entry. You get a chance to preview the host list before the actual import.
+The CSV file can then be imported in the same menu entry. You get a chance to preview the host list before the actual import.
 

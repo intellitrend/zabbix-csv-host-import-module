@@ -2,7 +2,7 @@
 /**
   * Zabbix CSV Import Frontend Module
   *
-  * @version 5.0.2
+  * @version 5.0.0
   * @author Wolfgang Alper <wolfgang.alper@intellitrend.de>
   * @copyright IntelliTrend GmbH, https://www.intellitrend.de
   * @license GNU Lesser General Public License v3.0
@@ -66,9 +66,10 @@ switch ($step) {
         );
         $hostlist = $data['hostlist'];
 
-        $table = (new CTable())
-            ->setId('hostlist-table')
-            ->addClass(ZBX_STYLE_VALUEMAP_LIST_TABLE);
+        $table = (new CTable())->setId('hostlist-table');
+        if (defined('ZBX_STYLE_VALUEMAP_LIST_TABLE')) {
+            $table->addClass(ZBX_STYLE_VALUEMAP_LIST_TABLE);
+        }
 
         $cols = [];
 
@@ -99,9 +100,10 @@ switch ($step) {
         // import
         $hostlist = $data['hostlist'];
 
-        $table = (new CTable())
-            ->setId('hostlist-table')
-            ->addClass(ZBX_STYLE_VALUEMAP_LIST_TABLE);
+        $table = (new CTable())->setId('hostlist-table');
+        if (defined('ZBX_STYLE_VALUEMAP_LIST_TABLE')) {
+            $table->addClass(ZBX_STYLE_VALUEMAP_LIST_TABLE);
+        }
     
         $table->setColumns([
             (new CTableColumn(_('Name')))

@@ -2,7 +2,7 @@
 /**
   * Zabbix CSV Import Frontend Module
   *
-  * @version 5.0.2
+  * @version 5.0.0
   * @author Wolfgang Alper <wolfgang.alper@intellitrend.de>
   * @copyright IntelliTrend GmbH, https://www.intellitrend.de
   * @license GNU Lesser General Public License v3.0
@@ -56,7 +56,11 @@ class CsvHostImportExample extends CAction {
 	 * @return bool
 	 */
 	protected function checkPermissions(): bool {
-		return $this->checkAccess(CRoleHelper::UI_ADMINISTRATION_GENERAL);
+		if (version_compare(ZABBIX_VERSION, '5.4.0', '>=')) {
+			return $this->checkAccess(CRoleHelper::UI_ADMINISTRATION_GENERAL);
+		} else {
+			return ($this->getUserType() == USER_TYPE_SUPER_ADMIN);
+		}
 	}
 
 	/**

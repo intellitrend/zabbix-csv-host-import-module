@@ -2,7 +2,7 @@
 /**
   * Zabbix CSV Import Frontend Module
   *
-  * @version 5.0.2
+  * @version 5.0.0
   * @author Wolfgang Alper <wolfgang.alper@intellitrend.de>
   * @copyright IntelliTrend GmbH, https://www.intellitrend.de
   * @license GNU Lesser General Public License v3.0
@@ -23,6 +23,8 @@ use CController as CAction;
 use CRoleHelper;
 use CUploadFile;
 use API;
+use CSession; // 5.0.0
+use CSessionHelper; // 5.2.0+
 
 /**
  * Host CSV importer module action.
@@ -60,6 +62,8 @@ class CsvHostImport extends CAction {
 		7 => 'Failed to write file to disk.',
 		8 => 'A PHP extension stopped the file upload.',
 	];
+
+	const HOSTLIST_KEY = 'ichi.hostlist';
 
 	private $hostlist = [];
 	private $step = 0;
@@ -101,7 +105,11 @@ class CsvHostImport extends CAction {
 	 * @return bool
 	 */
 	protected function checkPermissions(): bool {
-		return $this->checkAccess(CRoleHelper::UI_ADMINISTRATION_GENERAL);
+		if (version_compare(ZABBIX_VERSION, '5.4.0', '>=')) {
+			return $this->checkAccess(CRoleHelper::UI_ADMINISTRATION_GENERAL);
+		} else {
+			return ($this->getUserType() == USER_TYPE_SUPER_ADMIN);
+		}
 	}
 
 	private function csvParse(): bool {
@@ -261,6 +269,39 @@ class CsvHostImport extends CAction {
 		return true;
 	}
 
+	private function loadSession() {
+		if (version_compare(ZABBIX_VERSION, '5.2.0', '>=')) {
+			if (!CSessionHelper::has(self::HOSTLIST_KEY)) {
+				return false;
+			}
+			$this->hostlist = CSessionHelper::get(self::HOSTLIST_KEY);
+			return true;
+		} else {
+			if (!CSession::keyExists(self::HOSTLIST_KEY)) {
+				return false;
+			}
+			$this->hostlist = CSession::getValue(self::HOSTLIST_KEY);
+			return true;
+		}
+	}
+
+	private function saveSession() {
+		if (version_compare(ZABBIX_VERSION, '5.2.0', '>=')) {
+			CSessionHelper::set(self::HOSTLIST_KEY, $this->hostlist);
+		} else {
+			CSession::setValue(self::HOSTLIST_KEY, $this->hostlist);
+		}
+	}
+
+	private function clearSession() {
+		if (version_compare(ZABBIX_VERSION, '5.2.0', '>=')) {
+			CSessionHelper::unset([self::HOSTLIST_KEY]);
+		} else {
+			CSession::unsetValue([self::HOSTLIST_KEY]);
+		}
+	}
+
+
     /**
 	 * Prepare the response object for the view. Method called by Zabbix core.
 	 *
@@ -287,17 +328,16 @@ class CsvHostImport extends CAction {
 				if (!$this->csvParse()) {
 					$this->step = 0;
 				}
-				$_SESSION['ichi.hostlist'] = $this->hostlist;
+				$this->saveSession();
 				break;
 			case 2:
 				// import
-				if (!isset($_SESSION['ichi.hostlist'])) {
+				if (!$this->loadSession()) {
 					error(_('Missing host list in session.'));
 					break;
 				}
-				$this->hostlist = $_SESSION['ichi.hostlist'];
 				if ($this->importHosts()) {
-					unset($_SESSION['ichi.hostlist']);
+					$this->clearSession();
 				}
 				break;
 		}
