@@ -33,7 +33,7 @@ This software is licensed under the GNU Lesser General Public License v3.0.
 
 ## Requirements
 
-- Zabbix 5.0 to 5.4
+- Zabbix 6.0
 - File write access to the Zabbix frontend server
 - Super admin permissions for the Zabbix users that want to use the frontend module
 
@@ -49,9 +49,14 @@ Then go to `Administration`, `General`, `Modules`, click `Scan directory` and en
 
 Once the frontend module is activated, a new menu entry `Host CSV Importer` should appear under `Configuration`.
 
-You can download an example CSV file from there or use the [example.csv](./example.csv) from the repo and edit the list to your liking.
+Here's an example of two hosts: the first one with Zabbix agent and another with an SNMPv2 agent:
+```
+NAME;VISIBLE_NAME;HOST_GROUPS;TEMPLATES;AGENT_IP;AGENT_DNS;SNMP_IP;SNMP_DNS;SNMP_VERSION;DESCRIPTION
+example1;Example Host Agent;First host group, second host group;Linux by Zabbix agent;127.0.0.1;localhost;;;;Example Zabbix Agent host
+example2;Example Host SNMP;Third host group;Generic SNMP;;;127.0.0.1;localhost;2;Example SNMPv2 host
+```
 
-Here is a list of supported CSV columns:
+The following CSV columns are supported:
 
 | Name         | Purpose                                                      | Optional |
 | ------------ | ------------------------------------------------------------ | -------- |
