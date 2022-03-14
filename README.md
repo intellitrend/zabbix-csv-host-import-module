@@ -10,6 +10,10 @@ This software is licensed under the GNU Lesser General Public License v3.0.
 
 ## Changelog
 
+### Version 6.0.1
+
+* Support for Zabbix 6.0
+
 ### Version 5.4.2
 
 * Added support for Zabbix 5.0 and 5.2

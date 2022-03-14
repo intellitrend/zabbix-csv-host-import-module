@@ -2,7 +2,7 @@
 /**
   * Zabbix CSV Import Frontend Module
   *
-  * @version 5.0.0
+  * @version 6.0.1
   * @author Wolfgang Alper <wolfgang.alper@intellitrend.de>
   * @copyright IntelliTrend GmbH, https://www.intellitrend.de
   * @license GNU Lesser General Public License v3.0
@@ -23,8 +23,7 @@ use CController as CAction;
 use CRoleHelper;
 use CUploadFile;
 use API;
-use CSession; // 5.0.0
-use CSessionHelper; // 5.2.0+
+use CSessionHelper;
 
 /**
  * Host CSV importer module action.
@@ -105,11 +104,7 @@ class CsvHostImport extends CAction {
 	 * @return bool
 	 */
 	protected function checkPermissions(): bool {
-		if (version_compare(ZABBIX_VERSION, '5.4.0', '>=')) {
-			return $this->checkAccess(CRoleHelper::UI_ADMINISTRATION_GENERAL);
-		} else {
-			return ($this->getUserType() == USER_TYPE_SUPER_ADMIN);
-		}
+		return $this->checkAccess(CRoleHelper::UI_ADMINISTRATION_GENERAL);
 	}
 
 	private function csvParse(): bool {
@@ -270,35 +265,19 @@ class CsvHostImport extends CAction {
 	}
 
 	private function loadSession() {
-		if (version_compare(ZABBIX_VERSION, '5.2.0', '>=')) {
-			if (!CSessionHelper::has(self::HOSTLIST_KEY)) {
-				return false;
-			}
-			$this->hostlist = CSessionHelper::get(self::HOSTLIST_KEY);
-			return true;
-		} else {
-			if (!CSession::keyExists(self::HOSTLIST_KEY)) {
-				return false;
-			}
-			$this->hostlist = CSession::getValue(self::HOSTLIST_KEY);
-			return true;
+		if (!CSessionHelper::has(self::HOSTLIST_KEY)) {
+			return false;
 		}
+		$this->hostlist = CSessionHelper::get(self::HOSTLIST_KEY);
+		return true;
 	}
 
 	private function saveSession() {
-		if (version_compare(ZABBIX_VERSION, '5.2.0', '>=')) {
-			CSessionHelper::set(self::HOSTLIST_KEY, $this->hostlist);
-		} else {
-			CSession::setValue(self::HOSTLIST_KEY, $this->hostlist);
-		}
+		CSessionHelper::set(self::HOSTLIST_KEY, $this->hostlist);
 	}
 
 	private function clearSession() {
-		if (version_compare(ZABBIX_VERSION, '5.2.0', '>=')) {
-			CSessionHelper::unset([self::HOSTLIST_KEY]);
-		} else {
-			CSession::unsetValue([self::HOSTLIST_KEY]);
-		}
+		CSessionHelper::unset([self::HOSTLIST_KEY]);
 	}
 
 

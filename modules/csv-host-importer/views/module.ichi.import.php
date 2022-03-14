@@ -2,7 +2,7 @@
 /**
   * Zabbix CSV Import Frontend Module
   *
-  * @version 5.0.0
+  * @version 6.0.1
   * @author Wolfgang Alper <wolfgang.alper@intellitrend.de>
   * @copyright IntelliTrend GmbH, https://www.intellitrend.de
   * @license GNU Lesser General Public License v3.0
@@ -126,8 +126,8 @@ switch ($step) {
 
             if ($hostid != -1) {
                 $cols[] = new CCol(
-                    new CLink('Created', (new CUrl('hosts.php'))
-                        ->setArgument('form', 'update')
+                    new CLink('Created', (new CUrl('zabbix.php'))
+                        ->setArgument('action', 'host.edit')
                         ->setArgument('hostid', $hostid)
                     )
                 );
