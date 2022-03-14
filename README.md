@@ -10,7 +10,7 @@ This software is licensed under the GNU Lesser General Public License v3.0.
 
 ## Download
 
-You can find the latest versions for the respective Zabbix releases on the [Github releases page](/intellitrend/zabbix-csv-host-import-module/releases).
+You can find the latest versions for the respective Zabbix releases on the [Github releases page](/releases).
 
 ## Changelog
 
