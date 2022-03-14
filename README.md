@@ -8,6 +8,10 @@ This is a Zabbix frontend module that provides a simplified host import via CSV 
 
 This software is licensed under the GNU Lesser General Public License v3.0.
 
+## Download
+
+You can find the latest versions for the respective Zabbix releases on the [Github releases page](/intellitrend/zabbix-csv-host-import-module/releases).
+
 ## Changelog
 
 ### Version 6.0.1
@@ -16,7 +20,7 @@ This software is licensed under the GNU Lesser General Public License v3.0.
 
 ### Version 5.4.2
 
-* Added support for Zabbix 5.0 and 5.2
+* Support for Zabbix 5.0, 5.2 and 5.4
 * Non-functional menu entry for non-superadmins is now hidden
 
 ### Version 5.0.2
@@ -29,7 +33,7 @@ This software is licensed under the GNU Lesser General Public License v3.0.
 
 ### Version 5.0.0
 
-* Initial public release
+* Initial public release for Zabbix 5.4
 
 ## Requirements
 
