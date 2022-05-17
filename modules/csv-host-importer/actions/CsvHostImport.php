@@ -192,6 +192,11 @@ class CsvHostImport extends CAction {
 
 			foreach ($hostgroups as $hostgroup) {
 				$hostgroup = trim($hostgroup);
+				if (empty($hostgroup)) {
+					continue;
+				}
+
+				$hostgroup = trim($hostgroup);
 				$zbxhostgroup = API::HostGroup()->get([
 					'output' => ['id'],
 					'search' => ['name' => $hostgroup],
@@ -211,6 +216,10 @@ class CsvHostImport extends CAction {
 
 			foreach ($templates as $template) {
 				$template = trim($template);
+				if (empty($template)) {
+					continue;
+				}
+
 				$zbxtemplate = API::Template()->get([
 					'output' => ['id'],
 					'search' => ['name' => $template],
