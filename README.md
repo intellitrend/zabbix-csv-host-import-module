@@ -10,9 +10,15 @@ This software is licensed under the GNU Lesser General Public License v3.0.
 
 ## Changelog
 
+### Version 5.4.3
+
+* Fixed "Missing host list in session" error when reading larger CSV files
+* Fixed incorrect host group and template assignment when the respective fields are empty
+* Optional CSV columns now can be omitted entirely from the CSV file instead of leaving them empty
+
 ### Version 5.4.2
 
-* Added support for Zabbix 5.0 and 5.2
+* Support for Zabbix 5.0, 5.2 and 5.4
 * Non-functional menu entry for non-superadmins is now hidden
 
 ### Version 5.0.2
