@@ -23,7 +23,7 @@ use CController as CAction;
 use CRoleHelper;
 use CUploadFile;
 use API;
-use CSessionHelper;
+use CWebUser;
 
 /**
  * Host CSV importer module action.
@@ -61,8 +61,6 @@ class CsvHostImport extends CAction {
 		7 => 'Failed to write file to disk.',
 		8 => 'A PHP extension stopped the file upload.',
 	];
-
-	const HOSTLIST_KEY = 'ichi.hostlist';
 
 	private $hostlist = [];
 	private $step = 0;
@@ -107,7 +105,7 @@ class CsvHostImport extends CAction {
 		return $this->checkAccess(CRoleHelper::UI_ADMINISTRATION_GENERAL);
 	}
 
-	private function csvParse(): bool {
+	private function csvUpload($path): bool {
 		// can't continue here if there was no upload
 		if (!isset($_FILES['csv_file'])) {
 			error(_('Missing file upload.'));
@@ -121,9 +119,13 @@ class CsvHostImport extends CAction {
 			return false;
 		}
 
+		move_uploaded_file($csv_file['tmp_name'], $path);
+		return true;
+	}
+
+	private function csvParse($path): bool {
 		try {
 			$row = 1;
-			$path = $csv_file['tmp_name'];
 			$this->hostlist = [];
 
 			if (($fp = fopen($path, "r")) !== FALSE) {
@@ -264,29 +266,14 @@ class CsvHostImport extends CAction {
 		return true;
 	}
 
-	private function loadSession() {
-		if (!CSessionHelper::has(self::HOSTLIST_KEY)) {
-			return false;
-		}
-		$this->hostlist = CSessionHelper::get(self::HOSTLIST_KEY);
-		return true;
-	}
-
-	private function saveSession() {
-		CSessionHelper::set(self::HOSTLIST_KEY, $this->hostlist);
-	}
-
-	private function clearSession() {
-		CSessionHelper::unset([self::HOSTLIST_KEY]);
-	}
-
-
     /**
 	 * Prepare the response object for the view. Method called by Zabbix core.
 	 *
 	 * @return void
 	 */
 	protected function doAction() {
+		$tmpPath = sprintf("%s/ichi.hostlist.%d.csv", sys_get_temp_dir(), CWebUser::$data['userid']);
+
 		if ($this->hasInput('step')) {
 			$this->step = intval($this->getInput('step')) & 3;
 		} else {
@@ -301,23 +288,28 @@ class CsvHostImport extends CAction {
 		switch ($this->step) {
 			case 0:
 				// upload
+				if (file_exists($tmpPath)) {
+					unlink($tmpPath);
+				}
 				break;
 			case 1:
 				// preview
-				if (!$this->csvParse()) {
+				if (!$this->csvUpload($tmpPath) || !$this->csvParse($tmpPath)) {
 					$this->step = 0;
 				}
-				$this->saveSession();
 				break;
 			case 2:
 				// import
-				if (!$this->loadSession()) {
-					error(_('Missing host list in session.'));
+				if (!file_exists($tmpPath)) {
+					error(_('Missing temporary host file.'));
 					break;
 				}
-				if ($this->importHosts()) {
-					$this->clearSession();
+				if (!$this->csvParse($tmpPath)) {
+					error(_('Unexpected parsing error.'));
+					break;
 				}
+				$this->importHosts();
+				unlink($tmpPath);
 				break;
 		}
 
