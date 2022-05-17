@@ -2,7 +2,7 @@
 /**
   * Zabbix CSV Import Frontend Module
   *
-  * @version 6.0.1
+  * @version 6.0.2
   * @author Wolfgang Alper <wolfgang.alper@intellitrend.de>
   * @copyright IntelliTrend GmbH, https://www.intellitrend.de
   * @license GNU Lesser General Public License v3.0

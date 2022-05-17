@@ -14,6 +14,12 @@ You can find the latest versions for the respective Zabbix releases on the [Gith
 
 ## Changelog
 
+### Version 6.0.2
+
+* Fixed "Missing host list in session" error when reading larger CSV files
+* Fixed incorrect host group and template assignment when the respective fields are empty
+* Optional CSV columns now can be omitted entirely from the CSV file instead of leaving them empty
+
 ### Version 6.0.1
 
 * Support for Zabbix 6.0
