@@ -179,6 +179,14 @@ class CsvHostImport extends CAction {
 						}
 						$host[$header[$index]] = trim($value);
 					}
+
+					foreach (self::CSV_HEADER_REQUIRED as $header_required) {
+						if (empty($host[$header_required])) {
+							error(_s('Empty column "%1$s" in CSV file line %2$d.', $header_required, $linenum));
+							return false;
+						}
+					}
+
 					$this->hostlist[] = $host;
 				}
 				fclose($fp);
