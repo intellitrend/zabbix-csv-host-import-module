@@ -36,18 +36,25 @@ class CsvHostImport extends CAction {
 	// character used to separate CSV fields
 	const CSV_SEPARATOR = ';';
 
-	// required CSV column names
+	// defined CSV column names
 	const CSV_HEADER = [
-		"NAME",
-		"VISIBLE_NAME",
-		"HOST_GROUPS",
-		"TEMPLATES",
-		"AGENT_IP",
-		"AGENT_DNS",
-		"SNMP_IP",
-		"SNMP_DNS",
-		"SNMP_VERSION",
-		"DESCRIPTION"
+		'NAME',
+		'VISIBLE_NAME',
+		'HOST_GROUPS',
+		'TEMPLATES',
+		'AGENT_IP',
+		'AGENT_DNS',
+		'SNMP_IP',
+		'SNMP_DNS',
+		'SNMP_VERSION',
+		'DESCRIPTION',
+		'HOST_GROUPS',
+	];
+
+	// required CSV column names
+	const CSV_HEADER_REQUIRED = [
+		'NAME',
+		'HOST_GROUPS',
 	];
 
 	// user-friendly messages for upload error codes
@@ -128,11 +135,11 @@ class CsvHostImport extends CAction {
 			$row = 1;
 			$this->hostlist = [];
 
-			if (($fp = fopen($path, "r")) !== FALSE) {
+			if (($fp = fopen($path, 'r')) !== FALSE) {
 				// get first CSV line, which is the header
 				$header = fgetcsv($fp, self::CSV_MAX_LINE_LEN, self::CSV_SEPARATOR);
 				if ($header === FALSE) {
-					error(_("Empty CSV file."));
+					error(_('Empty CSV file.'));
 					return false;
 				}
 
@@ -143,7 +150,7 @@ class CsvHostImport extends CAction {
 				}
 
 				// check if all required columns are defined (surplus columns are silently ignored)
-				foreach (self::CSV_HEADER as $header_required) {
+				foreach (self::CSV_HEADER_REQUIRED as $header_required) {
 					if (array_search($header_required, $header) === false) {
 						error(_s('Missing column "%1$s" in CSV file.', $header_required));
 						return false;
@@ -183,50 +190,70 @@ class CsvHostImport extends CAction {
 
 	private function importHosts(): bool {
 		foreach ($this->hostlist as &$host) {
-			$hostgroups = explode(',', $host['HOST_GROUPS']);
-			$zbxhostgroups = [];
+			$zbxhost = [
+				'host' => $host['NAME']
+			];
 
-			foreach ($hostgroups as $hostgroup) {
-				$hostgroup = trim($hostgroup);
-				if (empty($hostgroup)) {
-					continue;
-				}
-
-				$hostgroup = trim($hostgroup);
-				$zbxhostgroup = API::HostGroup()->get([
-					'output' => ['id'],
-					'search' => ['name' => $hostgroup],
-					'limit' => 1
-				]);
-
-				if (empty($zbxhostgroup)) {
-					$result = API::HostGroup()->create(['name' => $hostgroup]);
-					$zbxhostgroup = [['groupid' => $result['groupids'][0]]];
-				}
-
-				$zbxhostgroups[] = $zbxhostgroup[0];
+			if (array_key_exists('VISIBLE_NAME', $host)) {
+				$zbxhost['name'] = $host['VISIBLE_NAME'];
 			}
 
-			$templates = explode(',', $host['TEMPLATES']);
-			$zbxtemplates = [];
+			if (array_key_exists('DESCRIPTION', $host)) {
+				$zbxhost['description'] = $host['DESCRIPTION'];
+			}
 
-			foreach ($templates as $template) {
-				$template = trim($template);
-				if (empty($template)) {
-					continue;
+			if (array_key_exists('HOST_GROUPS', $host)) {
+				$hostgroups = explode(',', $host['HOST_GROUPS']);
+				$zbxhostgroups = [];
+
+				foreach ($hostgroups as $hostgroup) {
+					$hostgroup = trim($hostgroup);
+					if (empty($hostgroup)) {
+						continue;
+					}
+
+					$hostgroup = trim($hostgroup);
+					$zbxhostgroup = API::HostGroup()->get([
+						'output' => ['id'],
+						'search' => ['name' => $hostgroup],
+						'limit' => 1
+					]);
+
+					if (empty($zbxhostgroup)) {
+						$result = API::HostGroup()->create(['name' => $hostgroup]);
+						$zbxhostgroup = [['groupid' => $result['groupids'][0]]];
+					}
+
+					$zbxhostgroups[] = $zbxhostgroup[0];
 				}
 
-				$zbxtemplate = API::Template()->get([
-					'output' => ['id'],
-					'search' => ['name' => $template],
-					'limit' => 1
-				]);
+				$zbxhost['groups'] = $zbxhostgroups;
+			}
 
-				if (empty($zbxtemplate)) {
-					error(_s('Template "%1$s" on host "%2$s" not found.', $template, $host['NAME']));
-				} else {
-					$zbxtemplates[] = $zbxtemplate[0];
+			if (array_key_exists('TEMPLATES', $host)) {
+				$templates = explode(',', $host['TEMPLATES']);
+				$zbxtemplates = [];
+
+				foreach ($templates as $template) {
+					$template = trim($template);
+					if (empty($template)) {
+						continue;
+					}
+
+					$zbxtemplate = API::Template()->get([
+						'output' => ['id'],
+						'search' => ['name' => $template],
+						'limit' => 1
+					]);
+
+					if (empty($zbxtemplate)) {
+						error(_s('Template "%1$s" on host "%2$s" not found.', $template, $host['NAME']));
+					} else {
+						$zbxtemplates[] = $zbxtemplate[0];
+					}
 				}
+
+				$zbxhost['templates'] = $zbxtemplates;
 			}
 
 			$zbxinterfaces = [];
@@ -257,14 +284,9 @@ class CsvHostImport extends CAction {
 				];
 			}
 
-			$zbxhost = [
-				'host' => $host['NAME'],
-				'name' => $host['VISIBLE_NAME'],
-				'description' => $host['DESCRIPTION'],
-				'groups' => $zbxhostgroups,
-				'templates' => $zbxtemplates,
-				'interfaces' => $zbxinterfaces
-			];
+			if ($zbxinterfaces) {
+				$zbxhost['interfaces'] = $zbxinterfaces;
+			}
 
 			$result = API::Host()->create($zbxhost);
 			$host['HOSTID'] = empty($result['hostids']) ? -1 : $result['hostids'][0];
