@@ -84,7 +84,7 @@ switch ($step) {
         foreach ($hostlist as $row) {
             $cols = [];
             foreach ($colnames as $k => $v) {
-                $cols[] = new CCol($row[$k]);
+                $cols[] = new CCol($row[$k] ?? '');
             }
 
             $table->addRow($cols, 'form_row');
@@ -122,7 +122,7 @@ switch ($step) {
 
             $cols = [];
             $cols[] = new CCol($row['NAME']);
-            $cols[] = new CCol($row['VISIBLE_NAME']);
+            $cols[] = new CCol($row['VISIBLE_NAME'] ?? '');
 
             if ($hostid != -1) {
                 $cols[] = new CCol(
