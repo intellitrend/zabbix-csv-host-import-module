@@ -17,5 +17,5 @@ header('Content-Type: text/csv');
 header('Content-Disposition: attachment; filename="hosts_example.csv"');
 ?>
 NAME;VISIBLE_NAME;HOST_GROUPS;TEMPLATES;AGENT_IP;AGENT_DNS;SNMP_IP;SNMP_DNS;SNMP_VERSION;DESCRIPTION
-example1;Example Host Agent;First host group, second host group;Linux by Zabbix agent;127.0.0.1;localhost;;;;Example Zabbix Agent host
-example2;Example Host SNMP;Third host group;Generic SNMP;;;127.0.0.1;localhost;2;Example SNMPv2 host
+example1;Example Host Agent;First host group, second host group;Template OS Linux by Zabbix agent;127.0.0.1;localhost;;;;Example Zabbix Agent host
+example2;Example Host SNMP;Third host group;Template Module Generic SNMP;;;127.0.0.1;localhost;2;Example SNMPv2 host
