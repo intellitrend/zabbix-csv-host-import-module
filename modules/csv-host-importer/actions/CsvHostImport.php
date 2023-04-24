@@ -2,7 +2,7 @@
 /**
   * Zabbix CSV Import Frontend Module
   *
-  * @version 6.0.3
+  * @version 6.0.4
   * @author Wolfgang Alper <wolfgang.alper@intellitrend.de>
   * @copyright IntelliTrend GmbH, https://www.intellitrend.de
   * @license GNU Lesser General Public License v3.0
@@ -83,7 +83,7 @@ class CsvHostImport extends CAction {
 		 * modification, such as update or delete actions. In such case Session ID must be presented in the URL, so that
 		 * the URL would expire as soon as the session expired.
 		 */
-		$this->disableSIDvalidation();
+		$this->disableCsrfValidation();
 	}
 
 	/**

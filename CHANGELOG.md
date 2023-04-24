@@ -1,6 +1,11 @@
 # Changelog
 
-## Version 6.0.3
+## Version 6.1.0
+
+* Support for Zabbix 6.4 (for Zabbix 6.0 and 6.2, use previous version)
+* Moved menu entry to `Administration`
+
+## Version 6.0.4
 
 * Support for Zabbix 6.2
 

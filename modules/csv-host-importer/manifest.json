@@ -1,8 +1,8 @@
 {
-	"manifest_version": 1.0,
+	"manifest_version": 2,
 	"id": "intellitrend_csv_host_importer",
 	"name": "CSV Host Importer",
-	"version": "6.0.3",
+	"version": "6.1.0",
 	"namespace": "ichi",
 	"author": "IntelliTrend GmbH",
 	"url": "https://www.intellitrend.de/",
@@ -16,7 +16,5 @@
 			"class": "CsvHostImportExample",
 			"layout": "layout.ichi.example"
 		}
-	},
-	"config": {
 	}
 }

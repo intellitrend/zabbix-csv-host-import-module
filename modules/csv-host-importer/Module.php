@@ -2,7 +2,7 @@
 /**
   * Zabbix CSV Import Frontend Module
   *
-  * @version 6.0.3
+  * @version 6.0.4
   * @author Wolfgang Alper <wolfgang.alper@intellitrend.de>
   * @copyright IntelliTrend GmbH, https://www.intellitrend.de
   * @license GNU Lesser General Public License v3.0
@@ -20,11 +20,12 @@ namespace Modules\Ichi;
 use APP;
 use CController as CAction;
 use CWebUser;
+use Zabbix\Core\CModule;
 
 /**
  * Please see Core\CModule class for additional reference.
  */
-class Module extends \Core\CModule {
+class Module extends CModule {
 
 	/**
 	 * Initialize module.
@@ -35,7 +36,7 @@ class Module extends \Core\CModule {
 			return;
 		}
 		// Initialize main menu (CMenu class instance).
-		APP::Component()->get('menu.main')->findOrAdd(_('Configuration'))->getSubmenu()->add((new \CMenuItem(_('Host CSV Importer')))->setAction('ichi.import'));
+		APP::Component()->get('menu.main')->findOrAdd(_('Administration'))->getSubmenu()->add((new \CMenuItem(_('Host CSV Importer')))->setAction('ichi.import'));
 	}
 
 	/**

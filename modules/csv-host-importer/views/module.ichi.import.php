@@ -2,7 +2,7 @@
 /**
   * Zabbix CSV Import Frontend Module
   *
-  * @version 6.0.3
+  * @version 6.0.4
   * @author Wolfgang Alper <wolfgang.alper@intellitrend.de>
   * @copyright IntelliTrend GmbH, https://www.intellitrend.de
   * @license GNU Lesser General Public License v3.0
@@ -13,13 +13,13 @@
   * However you must not change author and copyright information.
   */
 
-$widget = (new CWidget())->setTitle(_('Host CSV Importer'));
+$widget = (new CHtmlPage())->setTitle(_('Host CSV Importer'));
 $form_list = (new CFormList('hostListFormList'));
 $form = (new CForm('post', (new CUrl('zabbix.php'))
         ->setArgument('action', 'ichi.import')
         ->getUrl(), 'multipart/form-data')
     )
-    ->setAttribute('aria-labeledby', ZBX_STYLE_PAGE_TITLE);
+    ->setAttribute('aria-labeledby', ZBX_STYLE_PAGE_TITLE_SUBMENU);
 
 $button_name = ''; // label for the button of the next step
 $other_buttons = []; // optional extra buttons
