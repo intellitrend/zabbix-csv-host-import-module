@@ -14,7 +14,7 @@ You can find the latest versions for the respective Zabbix releases on the [Gith
 
 ## Requirements
 
-- Zabbix 6.0
+- Zabbix 6.0, 6.2 or 6.4
 - File write access to the Zabbix frontend server
 - Super admin permissions for the Zabbix users that want to use the frontend module
 
@@ -34,7 +34,7 @@ Here's an example of two hosts: the first one with Zabbix agent and another with
 ```
 NAME;VISIBLE_NAME;HOST_GROUPS;TEMPLATES;AGENT_IP;AGENT_DNS;SNMP_IP;SNMP_DNS;SNMP_VERSION;DESCRIPTION
 example1;Example Host Agent;First host group, second host group;Linux by Zabbix agent;127.0.0.1;localhost;;;;Example Zabbix Agent host
-example2;Example Host SNMP;Third host group;Generic SNMP;;;127.0.0.1;localhost;2;Example SNMPv2 host
+example2;Example Host SNMP;Third host group;Generic by SNMP;;;127.0.0.1;localhost;2;Example SNMPv2 host
 ```
 
 The following CSV columns are supported:
