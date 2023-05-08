@@ -13,7 +13,7 @@
   * However you must not change author and copyright information.
   */
 
-$widget = (new CHtmlPage())->setTitle(_('Host CSV Importer'));
+$widget = (new CHtmlPage())->setTitle(_('CSV Host Importer'));
 $form_list = (new CFormList('hostListFormList'));
 $form = (new CForm('post', (new CUrl('zabbix.php'))
         ->setArgument('action', 'ichi.import')

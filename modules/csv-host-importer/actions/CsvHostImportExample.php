@@ -22,7 +22,7 @@ use CController as CAction;
 use CRoleHelper;
 
 /**
- * Host CSV importer example page action.
+ * CSV Host Importer example page action.
  */
 class CsvHostImportExample extends CAction {
 

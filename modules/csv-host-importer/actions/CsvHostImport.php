@@ -26,7 +26,7 @@ use API;
 use CWebUser;
 
 /**
- * Host CSV importer module action.
+ * CSV Host Importer module action.
  */
 class CsvHostImport extends CAction {
 
@@ -356,7 +356,7 @@ class CsvHostImport extends CAction {
 			'hostlist' => $this->hostlist,
 			'step' => $this->step
 		]);
-		$response->setTitle(_('Host CSV Importer'));
+		$response->setTitle(_('CSV Host Importer'));
 		$this->setResponse($response);
     }
 }

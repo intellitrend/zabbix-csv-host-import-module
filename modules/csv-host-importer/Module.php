@@ -36,7 +36,7 @@ class Module extends CModule {
 			return;
 		}
 		// Initialize main menu (CMenu class instance).
-		APP::Component()->get('menu.main')->findOrAdd(_('Administration'))->getSubmenu()->add((new \CMenuItem(_('Host CSV Importer')))->setAction('ichi.import'));
+		APP::Component()->get('menu.main')->findOrAdd(_('Administration'))->getSubmenu()->add((new \CMenuItem(_('CSV Host Importer')))->setAction('ichi.import'));
 	}
 
 	/**
