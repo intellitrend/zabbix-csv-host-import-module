@@ -31,6 +31,7 @@ $colnames = [
     'VISIBLE_NAME'  => 'Visible name',
     'HOST_GROUPS'   => 'Host groups',
     'HOST_TAGS'     => 'Host tags',
+    'PROXY'         => 'Proxy',
     'TEMPLATES'     => 'Templates',
     'AGENT_IP'      => 'Agent IP',
     'AGENT_DNS'     => 'Agent DNS',

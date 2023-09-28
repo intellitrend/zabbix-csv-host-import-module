@@ -65,6 +65,7 @@ class CsvHostImport extends CAction {
 			['VISIBLE_NAME',   '',        true],
 			['HOST_GROUPS',    '',        false],
 			['HOST_TAGS',      '',        false],
+			['PROXY',          '',        false],
 			['TEMPLATES',      '',        false],
 			['AGENT_IP',       '',        false],
 			['AGENT_DNS',      '',        false],
@@ -270,6 +271,20 @@ class CsvHostImport extends CAction {
 							"tag" => $hosttag,
 						];
 					}
+				}
+			}
+
+			if ($host['PROXY'] !== '') {
+				$zbxproxy = API::Proxy()->get([
+					'output' => ['proxyid'],
+					'filter' => ['host' => $host['PROXY']],
+					'limit' => 1
+				]);
+
+				if ($zbxproxy) {
+					$zbxhost['proxy_hostid'] = $zbxproxy[0]['proxyid'];
+				} else {
+					error(_s('Proxy "%1$s" on host "%2$s" not found.', $host['PROXY'], $host['NAME']));
 				}
 			}
 

@@ -2,8 +2,9 @@
 
 ## Version 6.1.1
 
-* Added support for interface ports and JMX interfaces.
-* Added support for host tags.
+* Added support for interface ports (`AGENT_PORT`, `SNMP_PORT`) and JMX interfaces (`JMX_IP`, `JMX_DNS`, `JMX_PORT`).
+* Added support for host tags (`HOST_TAGS`).
+* Added support for proxy (`PROXY`).
 
 ## Version 6.1.0
 
