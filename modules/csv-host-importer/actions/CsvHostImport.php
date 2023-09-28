@@ -64,6 +64,7 @@ class CsvHostImport extends CAction {
 			['NAME',           '',        true],
 			['VISIBLE_NAME',   '',        true],
 			['HOST_GROUPS',    '',        false],
+			['HOST_TAGS',      '',        false],
 			['TEMPLATES',      '',        false],
 			['AGENT_IP',       '',        false],
 			['AGENT_DNS',      '',        false],
@@ -245,6 +246,33 @@ class CsvHostImport extends CAction {
 				$zbxhost['groups'] = $zbxhostgroups;
 			}
 
+			if ($host['HOST_TAGS'] !== '') {
+				$hosttags = explode(',', $host['HOST_TAGS']);
+				$zbxhost['tags'] = [];
+
+				foreach ($hosttags as $hosttag) {
+					if ($hosttag === '') {
+						continue;
+					}
+
+					$tagname = '';
+					$tagvalue = '';
+
+					if (str_contains($hosttag, ':')) {
+						$tmp = explode(':', $hosttag, 2);
+						$zbxhost['tags'][] = [
+							"tag" => $tmp[0],
+							"value" => $tmp[1],
+						];
+					} else {
+						$tagname = $hosttag;
+						$zbxhost['tags'][] = [
+							"tag" => $hosttag,
+						];
+					}
+				}
+			}
+
 			if ($host['TEMPLATES'] !== '') {
 				$templates = explode(',', $host['TEMPLATES']);
 				$zbxtemplates = [];
@@ -261,10 +289,10 @@ class CsvHostImport extends CAction {
 						'limit' => 1
 					]);
 
-					if ($zbxtemplate === '') {
-						error(_s('Template "%1$s" on host "%2$s" not found.', $template, $host['NAME']));
-					} else {
+					if ($zbxtemplate) {
 						$zbxtemplates[] = $zbxtemplate[0];
+					} else {
+						error(_s('Template "%1$s" on host "%2$s" not found.', $template, $host['NAME']));
 					}
 				}
 
@@ -315,7 +343,7 @@ class CsvHostImport extends CAction {
 			}
 
 			$result = API::Host()->create($zbxhost);
-			$host['HOSTID'] = $result['hostids'] ? $result['hostids'][0] : -1;
+			$host['HOSTID'] = $result && $result['hostids'] ? $result['hostids'][0] : -1;
 		}
 
 		unset($host);

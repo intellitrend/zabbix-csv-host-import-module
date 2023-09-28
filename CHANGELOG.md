@@ -3,6 +3,7 @@
 ## Version 6.1.1
 
 * Added support for interface ports and JMX interfaces.
+* Added support for host tags.
 
 ## Version 6.1.0
 
