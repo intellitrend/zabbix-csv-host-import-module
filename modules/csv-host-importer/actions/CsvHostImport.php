@@ -283,7 +283,7 @@ class CsvHostImport extends CAction {
 					'main' => 1,
 					'dns' => $host['SNMP_DNS'],
 					'ip' => $host['SNMP_IP'],
-					'useip' => !empty($host['SNMP_IP']) && !empty($host['SNMP_IP']) ? 1 : 0,
+					'useip' => !empty($host['SNMP_IP']) ? 1 : 0,
 					'port' => 161,
 					'details' => [
 						'version' => !empty($host['SNMP_VERSION']) ? intval($host['SNMP_VERSION']) : 1,
