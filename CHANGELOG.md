@@ -6,7 +6,7 @@
 * Added support for host tags (`HOST_TAGS`).
 * Added support for proxy (`PROXY`).
 
-## Version 6.2.0
+## Version 6.1.0
 
 * Support for Zabbix 6.4 (for Zabbix 6.0 and 6.2, use previous version)
 * Moved menu entry to `Administration`
