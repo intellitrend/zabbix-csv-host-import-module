@@ -36,32 +36,6 @@ class CsvHostImport extends CAction {
 	// character used to separate CSV fields
 	const CSV_SEPARATOR = ';';
 
-	// defined CSV column names
-	const CSV_HEADER = [
-		'NAME',
-		'VISIBLE_NAME',
-		'HOST_GROUPS',
-		'TEMPLATES',
-		'AGENT_IP',
-		'AGENT_DNS',
-		'AGENT_PORT',
-		'SNMP_IP',
-		'SNMP_DNS',
-		'SNMP_PORT',
-		'SNMP_VERSION',
-		'DESCRIPTION',
-		'HOST_GROUPS',
-		'JMX_IP',
-		'JMX_DNS',
-		'JMX_PORT',
-	];
-
-	// required CSV column names
-	const CSV_HEADER_REQUIRED = [
-		'NAME',
-		'HOST_GROUPS',
-	];
-
 	// user-friendly messages for upload error codes
 	const UPLOAD_ERRORS = [
 		0 => 'There is no error, the file uploaded with success',
@@ -74,6 +48,7 @@ class CsvHostImport extends CAction {
 		8 => 'A PHP extension stopped the file upload.',
 	];
 
+	private $csvColumns;
 	private $hostlist = [];
 	private $step = 0;
 
@@ -83,6 +58,27 @@ class CsvHostImport extends CAction {
 	 * @return void
 	 */
 	public function init(): void {
+		 // define CSV columns
+		$this->csvColumns = [
+            // Name            Default    Required
+			['NAME',           '',        true],
+			['VISIBLE_NAME',   '',        true],
+			['HOST_GROUPS',    '',        false],
+			['TEMPLATES',      '',        false],
+			['AGENT_IP',       '',        false],
+			['AGENT_DNS',      '',        false],
+			['AGENT_PORT',     '10050',   false],
+			['SNMP_IP',        '',        false],
+			['SNMP_DNS',       '',        false],
+			['SNMP_PORT',      '161',     false],
+			['SNMP_VERSION',   '',        false],
+			['DESCRIPTION',    '',        false],
+			['HOST_GROUPS',    '',        false],
+			['JMX_IP',         '',        false],
+			['JMX_DNS',        '',        false],
+			['JMX_PORT',       '12345',   false],
+		];
+
 		/**
 		 * Disable SID (Sessoin ID) validation. Session ID validation should only be used for actions which involde data
 		 * modification, such as update or delete actions. In such case Session ID must be presented in the URL, so that
@@ -115,10 +111,6 @@ class CsvHostImport extends CAction {
 	 */
 	protected function checkPermissions(): bool {
 		return $this->checkAccess(CRoleHelper::UI_ADMINISTRATION_GENERAL);
-	}
-
-	private function isDefined($arr, $key): bool {
-		return array_key_exists($key, $arr) && trim($arr[$key]) != '';
 	}
 
 	private function csvUpload($path): bool {
@@ -159,9 +151,9 @@ class CsvHostImport extends CAction {
 				}
 
 				// check if all required columns are defined (surplus columns are silently ignored)
-				foreach (self::CSV_HEADER_REQUIRED as $header_required) {
-					if (array_search($header_required, $header) === false) {
-						error(_s('Missing column "%1$s" in CSV file.', $header_required));
+				foreach ($this->csvColumns as $csvColumn) {
+					if ($csvColumn[2] && array_search($csvColumn[0], $header) === false) {
+						error(_s('Missing required column "%1$s" in CSV file.', $csvColumn->name()));
 						return false;
 					}
 				}
@@ -185,10 +177,16 @@ class CsvHostImport extends CAction {
 						$host[$header[$index]] = trim($value);
 					}
 
-					foreach (self::CSV_HEADER_REQUIRED as $header_required) {
-						if (empty($host[$header_required])) {
-							error(_s('Empty column "%1$s" in CSV file line %2$d.', $header_required, $linenum));
+					// make sure all columns are defined
+					foreach ($this->csvColumns as $csvColumn) {
+						// required coumns not only must exist but also be non-empty
+						if ($csvColumn[2] && trim($host[$csvColumn[0]]) === '') {
+							error(_s('Empty required column "%1$s" in CSV file line %2$d.', $csvColumn[0], $linenum));
 							return false;
+						}
+
+						if (!array_key_exists($csvColumn[0], $host)) {
+							$host[$csvColumn[0]] = $csvColumn[1];
 						}
 					}
 
@@ -211,21 +209,21 @@ class CsvHostImport extends CAction {
 				'host' => $host['NAME']
 			];
 
-			if (array_key_exists('VISIBLE_NAME', $host)) {
+			if ($host['VISIBLE_NAME'] !== '') {
 				$zbxhost['name'] = $host['VISIBLE_NAME'];
 			}
 
-			if (array_key_exists('DESCRIPTION', $host)) {
+			if ($host['DESCRIPTION'] !== '') {
 				$zbxhost['description'] = $host['DESCRIPTION'];
 			}
 
-			if (array_key_exists('HOST_GROUPS', $host)) {
+			if ($host['HOST_GROUPS'] !== '') {
 				$hostgroups = explode(',', $host['HOST_GROUPS']);
 				$zbxhostgroups = [];
 
 				foreach ($hostgroups as $hostgroup) {
 					$hostgroup = trim($hostgroup);
-					if (empty($hostgroup)) {
+					if ($hostgroup === '') {
 						continue;
 					}
 
@@ -236,7 +234,7 @@ class CsvHostImport extends CAction {
 						'limit' => 1
 					]);
 
-					if (empty($zbxhostgroup)) {
+					if ($zbxhostgroup === '') {
 						$result = API::HostGroup()->create(['name' => $hostgroup]);
 						$zbxhostgroup = [['groupid' => $result['groupids'][0]]];
 					}
@@ -247,13 +245,13 @@ class CsvHostImport extends CAction {
 				$zbxhost['groups'] = $zbxhostgroups;
 			}
 
-			if ($this->isDefined($host, 'TEMPLATES')) {
+			if ($host['TEMPLATES'] !== '') {
 				$templates = explode(',', $host['TEMPLATES']);
 				$zbxtemplates = [];
 
 				foreach ($templates as $template) {
 					$template = trim($template);
-					if (empty($template)) {
+					if ($template === '') {
 						continue;
 					}
 
@@ -263,7 +261,7 @@ class CsvHostImport extends CAction {
 						'limit' => 1
 					]);
 
-					if (empty($zbxtemplate)) {
+					if ($zbxtemplate === '') {
 						error(_s('Template "%1$s" on host "%2$s" not found.', $template, $host['NAME']));
 					} else {
 						$zbxtemplates[] = $zbxtemplate[0];
@@ -275,40 +273,40 @@ class CsvHostImport extends CAction {
 
 			$zbxinterfaces = [];
 
-			if ($this->isDefined($host, 'AGENT_IP') || $this->isDefined($host, 'AGENT_DNS')) {
+			if ($host['AGENT_IP'] !== '' || $host['AGENT_DNS'] !== '') {
 				$zbxinterfaces[] = [
 					'type' => 1,
 					'dns' => $host['AGENT_DNS'],
 					'ip' => $host['AGENT_IP'],
 					'main' => 1,
-					'useip' => $this->isDefined($host, 'AGENT_IP') ? 1 : 0,
-					'port' => $this->isDefined($host, 'AGENT_PORT') ? intval($host['AGENT_PORT']) : 10050,
+					'useip' => $host['AGENT_IP'] !== '' ? 1 : 0,
+					'port' => $host['AGENT_PORT'] !== '' ? intval($host['AGENT_PORT']) : 10050,
 				];
 			}
 
-			if ($this->isDefined($host, 'SNMP_IP') || $this->isDefined($host, 'SNMP_DNS')) {
+			if ($host['SNMP_IP'] !== '' || $host['SNMP_DNS'] !== '') {
 				$zbxinterfaces[] = [
 					'type' => 2,
 					'dns' => $host['SNMP_DNS'],
 					'ip' => $host['SNMP_IP'],
 					'main' => 1,
-					'useip' => $this->isDefined($host, 'SNMP_IP') ? 1 : 0,
-					'port' => $this->isDefined($host, 'SNMP_PORT') ? intval($host['SNMP_PORT']) : 161,
+					'useip' => $host['SNMP_IP'] !== '' ? 1 : 0,
+					'port' => $host['SNMP_PORT'] !== '' ? intval($host['SNMP_PORT']) : 161,
 					'details' => [
-						'version' => $this->isDefined($host, 'SNMP_VERSION') ? intval($host['SNMP_VERSION']) : 1,
+						'version' => $host['SNMP_VERSION'] !== '' ? intval($host['SNMP_VERSION']) : 1,
 						'community' => '{$SNMP_COMMUNITY}'
 					]
 				];
 			}
 
-			if ($this->isDefined($host, 'JMX_IP') || $this->isDefined($host, 'JMX_DNS')) {
+			if ($host['JMX_IP'] !== '' || $host['JMX_DNS'] !== '') {
 				$zbxinterfaces[] = [
 					'type' => 4,
 					'dns' => $host['JMX_DNS'],
 					'ip' => $host['JMX_IP'],
 					'main' => 1,
-					'useip' => $this->isDefined($host, 'JMX_IP') ? 1 : 0,
-					'port' => $this->isDefined($host, 'JMX_IP') ? intval($host['JMX_IP']) : 12345,
+					'useip' => $host['JMX_IP'] !== '' ? 1 : 0,
+					'port' => $host['JMX_IP'] !== '' ? intval($host['JMX_IP']) : 12345,
 				];
 			}
 
@@ -317,7 +315,7 @@ class CsvHostImport extends CAction {
 			}
 
 			$result = API::Host()->create($zbxhost);
-			$host['HOSTID'] = empty($result['hostids']) ? -1 : $result['hostids'][0];
+			$host['HOSTID'] = $result['hostids'] ? $result['hostids'][0] : -1;
 		}
 
 		unset($host);
