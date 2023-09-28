@@ -33,9 +33,14 @@ $colnames = [
     'TEMPLATES'     => 'Templates',
     'AGENT_IP'      => 'Agent IP',
     'AGENT_DNS'     => 'Agent DNS',
+    'AGENT_PORT'    => 'Agent port',
     'SNMP_IP'       => 'SNMP IP',
     'SNMP_DNS'      => 'SNMP DNS',
+    'SNMP_PORT'     => 'SNMP port',
     'SNMP_VERSION'  => 'SNMP version',
+    'JMX_IP'        => 'JMX IP',
+    'JMX_DNS'       => 'JMX DNS',
+    'JMX_PORT'      => 'JMX port',
     'DESCRIPTION'   => 'Description',
 ];
 

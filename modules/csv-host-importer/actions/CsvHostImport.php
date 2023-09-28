@@ -44,11 +44,16 @@ class CsvHostImport extends CAction {
 		'TEMPLATES',
 		'AGENT_IP',
 		'AGENT_DNS',
+		'AGENT_PORT',
 		'SNMP_IP',
 		'SNMP_DNS',
+		'SNMP_PORT',
 		'SNMP_VERSION',
 		'DESCRIPTION',
 		'HOST_GROUPS',
+		'JMX_IP',
+		'JMX_DNS',
+		'JMX_PORT',
 	];
 
 	// required CSV column names
@@ -110,6 +115,10 @@ class CsvHostImport extends CAction {
 	 */
 	protected function checkPermissions(): bool {
 		return $this->checkAccess(CRoleHelper::UI_ADMINISTRATION_GENERAL);
+	}
+
+	private function isDefined($arr, $key): bool {
+		return array_key_exists($key, $arr) && trim($arr[$key]) != '';
 	}
 
 	private function csvUpload($path): bool {
@@ -238,7 +247,7 @@ class CsvHostImport extends CAction {
 				$zbxhost['groups'] = $zbxhostgroups;
 			}
 
-			if (array_key_exists('TEMPLATES', $host)) {
+			if ($this->isDefined($host, 'TEMPLATES')) {
 				$templates = explode(',', $host['TEMPLATES']);
 				$zbxtemplates = [];
 
@@ -266,29 +275,40 @@ class CsvHostImport extends CAction {
 
 			$zbxinterfaces = [];
 
-			if (!empty($host['AGENT_IP']) || !empty($host['AGENT_DNS'])) {
+			if ($this->isDefined($host, 'AGENT_IP') || $this->isDefined($host, 'AGENT_DNS')) {
 				$zbxinterfaces[] = [
 					'type' => 1,
-					'main' => 1,
 					'dns' => $host['AGENT_DNS'],
 					'ip' => $host['AGENT_IP'],
-					'useip' => !empty($host['AGENT_IP']) ? 1 : 0,
-					'port' => 10050
+					'main' => 1,
+					'useip' => $this->isDefined($host, 'AGENT_IP') ? 1 : 0,
+					'port' => $this->isDefined($host, 'AGENT_PORT') ? intval($host['AGENT_PORT']) : 10050,
 				];
 			}
 
-			if (!empty($host['SNMP_IP']) || !empty($host['SNMP_DNS'])) {
+			if ($this->isDefined($host, 'SNMP_IP') || $this->isDefined($host, 'SNMP_DNS')) {
 				$zbxinterfaces[] = [
 					'type' => 2,
-					'main' => 1,
 					'dns' => $host['SNMP_DNS'],
 					'ip' => $host['SNMP_IP'],
-					'useip' => !empty($host['SNMP_IP']) ? 1 : 0,
-					'port' => 161,
+					'main' => 1,
+					'useip' => $this->isDefined($host, 'SNMP_IP') ? 1 : 0,
+					'port' => $this->isDefined($host, 'SNMP_PORT') ? intval($host['SNMP_PORT']) : 161,
 					'details' => [
-						'version' => !empty($host['SNMP_VERSION']) ? intval($host['SNMP_VERSION']) : 1,
+						'version' => $this->isDefined($host, 'SNMP_VERSION') ? intval($host['SNMP_VERSION']) : 1,
 						'community' => '{$SNMP_COMMUNITY}'
 					]
+				];
+			}
+
+			if ($this->isDefined($host, 'JMX_IP') || $this->isDefined($host, 'JMX_DNS')) {
+				$zbxinterfaces[] = [
+					'type' => 4,
+					'dns' => $host['JMX_DNS'],
+					'ip' => $host['JMX_IP'],
+					'main' => 1,
+					'useip' => $this->isDefined($host, 'JMX_IP') ? 1 : 0,
+					'port' => $this->isDefined($host, 'JMX_IP') ? intval($host['JMX_IP']) : 12345,
 				];
 			}
 

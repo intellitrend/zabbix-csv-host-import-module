@@ -1,5 +1,9 @@
 # Changelog
 
+## Version 6.1.1
+
+* Added support for interface ports and JMX interfaces.
+
 ## Version 6.1.0
 
 * Support for Zabbix 6.4 (for Zabbix 6.0 and 6.2, use previous version)

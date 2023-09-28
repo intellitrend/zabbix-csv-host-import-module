@@ -39,18 +39,23 @@ example2;Example Host SNMP;Third host group;Generic by SNMP;;;127.0.0.1;localhos
 
 The following CSV columns are supported:
 
-| Name         | Purpose                                                      | Optional |
-| ------------ | ------------------------------------------------------------ | -------- |
-| NAME         | Host name.                                                   | ❌        |
-| VISIBLE_NAME | Host visible name.                                           | ✔        |
-| HOST_GROUPS  | List of host group names, separated by a comma. Missing host groups are created automatically. | ❌        |
-| TEMPLATES    | List of template names to assign to the host, separated by a comma. Templates must exist with the specified name. | ✔        |
-| AGENT_IP     | Interface: Zabbix Agent IP address.                          | ✔        |
-| AGENT_DNS    | Interface: Zabbix Agent DNS name.                            | ✔        |
-| SNMP_IP      | Interface: SNMP IP address.                                  | ✔        |
-| SNMP_DNS     | Interface: SNMP DNS name.                                    | ✔        |
-| SNMP_VERSION | Interface: SNMP version number (1, 2 or 3).                  | ✔        |
-| DESCRIPTION  | Host description field.                                      | ✔        |
+| Name         | Purpose                                                      | Default | Optional |
+| ------------ | ------------------------------------------------------------ | ------- | -------- |
+| NAME         | Host name.                                                   |         | ❌        |
+| VISIBLE_NAME | Host visible name.                                           |         | ✔        |
+| HOST_GROUPS  | List of host group names, separated by a comma. Missing host groups are created automatically. |         | ❌        |
+| TEMPLATES    | List of template names to assign to the host, separated by a comma. Templates must exist with the specified name. |         | ✔        |
+| AGENT_IP     | Interface: Zabbix Agent IP address.                          |         | ✔        |
+| AGENT_DNS    | Interface: Zabbix Agent DNS name.                            |         | ✔        |
+| AGENT_PORT   | Interface: Zabbix Agent port.                                | 10050   | ✔        |
+| SNMP_IP      | Interface: SNMP IP address.                                  |         | ✔        |
+| SNMP_DNS     | Interface: SNMP DNS name.                                    |         | ✔        |
+| SNMP_PORT    | Interface: SNMP port.                                        | 161     | ✔        |
+| SNMP_VERSION | Interface: SNMP version number (1, 2 or 3).                  |         | ✔        |
+| JMX_IP       | Interface: JMX IP address.                                   |         | ✔        |
+| JMX_DNS      | Interface: JMX DNS name.                                     |         | ✔        |
+| JMX_PORT     | Interface: JMX port.                                         | 12345   | ✔        |
+| DESCRIPTION  | Host description field.                                      |         | ✔        |
 
 Additional hints:
 
