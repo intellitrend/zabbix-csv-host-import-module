@@ -1,5 +1,8 @@
 # Changelog
 
+## Version 6.2.1
+* Fixed JMX port not being set correctly on the host
+
 ## Version 6.2.0
 
 * Added support for interface ports (`AGENT_PORT`, `SNMP_PORT`) and JMX interfaces (`JMX_IP`, `JMX_DNS`, `JMX_PORT`).
