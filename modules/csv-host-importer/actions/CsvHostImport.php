@@ -349,7 +349,7 @@ class CsvHostImport extends CAction {
 					'ip' => $host['JMX_IP'],
 					'main' => 1,
 					'useip' => $host['JMX_IP'] !== '' ? 1 : 0,
-					'port' => $host['JMX_IP'] !== '' ? intval($host['JMX_IP']) : 12345,
+					'port' => $host['JMX_PORT'] !== '' ? intval($host['JMX_PORT']) : 12345,
 				];
 			}
 
