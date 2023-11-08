@@ -24,7 +24,7 @@ use CRoleHelper;
 /**
  * CSV Host Importer example page action.
  */
-class CsvHostImportExample extends CAction {
+class CSVHostImportExample extends CAction {
 
 	/**
 	 * Initialize action. Method called by Zabbix core.

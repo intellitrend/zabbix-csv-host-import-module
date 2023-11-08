@@ -28,7 +28,7 @@ use CWebUser;
 /**
  * CSV Host Importer module action.
  */
-class CsvHostImport extends CAction {
+class CSVHostImport extends CAction {
 
 	// maximum length of a single CSV line
 	const CSV_MAX_LINE_LEN = 1024;

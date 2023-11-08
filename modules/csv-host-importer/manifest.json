@@ -9,11 +9,11 @@
 	"description": "Import hosts via CSV files.",
 	"actions": {
 		"ichi.import": {
-			"class": "CsvHostImport",
+			"class": "CSVHostImport",
 			"view": "module.ichi.import"
 		},
 		"ichi.example": {
-			"class": "CsvHostImportExample",
+			"class": "CSVHostImportExample",
 			"layout": "layout.ichi.example"
 		}
 	}
