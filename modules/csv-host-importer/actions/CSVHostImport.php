@@ -155,7 +155,7 @@ class CSVHostImport extends CAction {
 				// check if all required columns are defined (surplus columns are silently ignored)
 				foreach ($this->csvColumns as $csvColumn) {
 					if ($csvColumn[2] && array_search($csvColumn[0], $header) === false) {
-						error(_s('Missing required column "%1$s" in CSV file.', $csvColumn->name()));
+						error(_s('Missing required column "%1$s" in CSV file.', $csvColumn[0]));
 						return false;
 					}
 				}
