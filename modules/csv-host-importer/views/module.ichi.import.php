@@ -2,7 +2,7 @@
 /**
   * Zabbix CSV Import Frontend Module
   *
-  * @version 6.0.4
+  * @version 6.2.1
   * @author Wolfgang Alper <wolfgang.alper@intellitrend.de>
   * @copyright IntelliTrend GmbH, https://www.intellitrend.de
   * @license GNU Lesser General Public License v3.0
@@ -13,38 +13,21 @@
   * However you must not change author and copyright information.
   */
 
+// alias for Zabbix 6.0
+if (!class_exists('CHtmlPage') && class_exists('CWidget')) {
+	class_alias('CWidget', 'CHtmlPage');
+}
+
 $widget = (new CHtmlPage())->setTitle(_('CSV Host Importer'));
 $form_list = (new CFormList('hostListFormList'));
 $form = (new CForm('post', (new CUrl('zabbix.php'))
         ->setArgument('action', 'ichi.import')
         ->getUrl(), 'multipart/form-data')
-    )
-    ->setAttribute('aria-labeledby', ZBX_STYLE_PAGE_TITLE_SUBMENU);
+);
 
 $button_name = ''; // label for the button of the next step
 $other_buttons = []; // optional extra buttons
 $step = $data['step']; // current step
-
-// human readable column names
-$colnames = [
-    'NAME'          => 'Name',
-    'VISIBLE_NAME'  => 'Visible name',
-    'HOST_GROUPS'   => 'Host groups',
-    'HOST_TAGS'     => 'Host tags',
-    'PROXY'         => 'Proxy',
-    'TEMPLATES'     => 'Templates',
-    'AGENT_IP'      => 'Agent IP',
-    'AGENT_DNS'     => 'Agent DNS',
-    'AGENT_PORT'    => 'Agent port',
-    'SNMP_IP'       => 'SNMP IP',
-    'SNMP_DNS'      => 'SNMP DNS',
-    'SNMP_PORT'     => 'SNMP port',
-    'SNMP_VERSION'  => 'SNMP version',
-    'JMX_IP'        => 'JMX IP',
-    'JMX_DNS'       => 'JMX DNS',
-    'JMX_PORT'      => 'JMX port',
-    'DESCRIPTION'   => 'Description',
-];
 
 switch ($step) {
     case 0:
@@ -72,6 +55,7 @@ switch ($step) {
                 ->addClass('table-forms-separator')
         );
         $hostlist = $data['hostlist'];
+        $hostcols = $data['hostcols'];
 
         $table = (new CTable())->setId('hostlist-table');
         if (defined('ZBX_STYLE_VALUEMAP_LIST_TABLE')) {
@@ -80,8 +64,8 @@ switch ($step) {
 
         $cols = [];
 
-        foreach ($colnames as $k => $v) {
-            $cols[] = (new CTableColumn(_($v)))
+        foreach ($hostcols as $raw => $friendly) {
+            $cols[] = (new CTableColumn(_($friendly)))
                 ->addStyle('min-width: 10em;')
                 ->addClass('table-col-handle');
         }
@@ -90,8 +74,8 @@ switch ($step) {
     
         foreach ($hostlist as $row) {
             $cols = [];
-            foreach ($colnames as $k => $v) {
-                $cols[] = new CCol($row[$k] ?? '');
+            foreach ($hostcols as $raw => $friendly) {
+                $cols[] = new CCol($row[$raw] ?? '');
             }
 
             $table->addRow($cols, 'form_row');

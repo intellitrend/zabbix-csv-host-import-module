@@ -2,7 +2,7 @@
 /**
   * Zabbix CSV Import Frontend Module
   *
-  * @version 6.0.4
+  * @version 6.2.1
   * @author Wolfgang Alper <wolfgang.alper@intellitrend.de>
   * @copyright IntelliTrend GmbH, https://www.intellitrend.de
   * @license GNU Lesser General Public License v3.0
@@ -15,14 +15,14 @@
 
 declare(strict_types = 1);
 
-namespace Modules\Ichi\Actions;
+namespace Modules\ICHI\Actions;
 
 use CControllerResponseData;
 use CController as CAction;
 use CRoleHelper;
 
 /**
- * CSV Host Importer example page action.
+ * Host CSV importer example page action.
  */
 class CSVHostImportExample extends CAction {
 
@@ -37,7 +37,11 @@ class CSVHostImportExample extends CAction {
 		 * modification, such as update or delete actions. In such case Session ID must be presented in the URL, so that
 		 * the URL would expire as soon as the session expired.
 		 */
-		$this->disableCsrfValidation();
+		if (method_exists($this, 'disableSIDvalidation')) {
+			$this->disableSIDvalidation();
+		} else {
+			$this->disableCsrfValidation();
+		}
 	}
 
 	/**

@@ -24,11 +24,13 @@ For Debian and Ubuntu server, the Zabbix Frontend modules are usually placed in 
 
 Copy the folder `modules/csv-host-importer` to `/usr/share/zabbix/modules/csv-host-importer` on the Zabbix frontend web server.
 
+**Note:** If you're using Zabbix 6.4, you'll need to remove `manifest.json` and rename `manifest.v2.json` to `manifest.json`.
+
 Then go to `Administration`, `General`, `Modules`, click `Scan directory` and enable the new module in the list.
 
 ## Usage
 
-Once the frontend module is activated, a new menu entry `CSV Host Importer` should appear under `Administration`.
+Once the frontend module is activated, a new menu entry `Host CSV Importer` should appear under `Configuration`.
 
 Here's an example of two hosts: the first one with Zabbix agent and another with an SNMPv2 agent:
 ```
