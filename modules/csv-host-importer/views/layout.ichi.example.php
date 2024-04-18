@@ -23,5 +23,5 @@ if (substr(ZABBIX_VERSION, 0, 3) == "6.0") {
 }
 ?>
 NAME;VISIBLE_NAME;HOST_GROUPS;HOST_TAGS;TEMPLATES;AGENT_IP;AGENT_DNS;SNMP_IP;SNMP_DNS;SNMP_VERSION;DESCRIPTION
-example1;Example Host Agent;First host group, second host group;;Linux by Zabbix agent;127.0.0.1;localhost;;;;Example Zabbix Agent host
-example2;Example Host SNMP;Third host group;First tag,Second tag:with value;<?=$template?>;;;127.0.0.1;localhost;2;Example SNMPv2 host
+example1;Example Host Agent;First host group|Second host group;;Linux by Zabbix agent;127.0.0.1;localhost;;;;Example Zabbix Agent host
+example2;Example Host SNMP;Third host group;First tag|Second tag=with value;<?=$template?>;;;127.0.0.1;localhost;2;Example SNMPv2 host

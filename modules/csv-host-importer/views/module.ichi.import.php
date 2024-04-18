@@ -28,6 +28,7 @@ $form = (new CForm('post', (new CUrl('zabbix.php'))
 $button_name = ''; // label for the button of the next step
 $other_buttons = []; // optional extra buttons
 $step = $data['step']; // current step
+$separator = $data['separator'];
 
 switch ($step) {
     case 0:
@@ -37,10 +38,17 @@ switch ($step) {
                 ->addClass('table-forms-separator')
         );
         $form_list->addRow(
-            (new CLabel(_('CSV File'), 'file'))->setAsteriskMark(),
+            (new CLabel(_('CSV File'), 'csv_file'))->setAsteriskMark(),
             (new CFile('csv_file'))
                 ->setWidth(ZBX_TEXTAREA_STANDARD_WIDTH)
-                ->setAriaRequired()
+                ->setAriaRequired(),
+        );
+        $form_list->addRow(
+            (new CLabel(_('CSV Separator'), 'separator')),
+            (new CSelect('separator'))
+                ->setFocusableElementId('separator')
+                ->setValue($separator)
+                ->addOptions(CSelect::createOptionsFromArray([0 => _('Semicolon'), 1 => _('Comma'), 2 => _('Tabulator')]))
         );
 
         $button_name = 'Preview';
@@ -82,6 +90,11 @@ switch ($step) {
         }
     
         $form_list->addRow($table);
+        $form_list->addRow(
+            (new CInput('hidden'))
+                ->setAttribute('value', $separator)
+                ->setName('separator')
+        );
     
         $button_name = 'Import';
         $other_buttons[] = new CSubmit("cancel", _("Cancel"));

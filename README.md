@@ -45,10 +45,10 @@ The following CSV columns are supported:
 | ------------ | ------------------------------------------------------------ | ------- | -------- |
 | NAME         | Host name.                                                   |         | ❌        |
 | VISIBLE_NAME | Host visible name.                                           |         | ✔        |
-| HOST_GROUPS  | List of host group names, separated by a comma. Missing host groups are created automatically. |         | ❌        |
-| HOST_TAGS    | List of host tags, separated by a comma. The tag format can be either be ``tag name`` or ``tag name:tag value``. |         | ✔        |
+| HOST_GROUPS  | List of host group names, separated by a '|'. Missing host groups are created automatically. |         | ❌        |
+| HOST_TAGS    | List of host tags, separated by a '|'. The tag format can be either be ``tag name`` or ``tag name:tag value``. |         | ✔        |
 | PROXY        | Name of the proxy that should monitor the host.              |         | ✔        |
-| TEMPLATES    | List of template names to assign to the host, separated by a comma. Templates must exist with the specified name. |         | ✔        |
+| TEMPLATES    | List of template names to assign to the host, separated by a '|'. Templates must exist with the specified name. |         | ✔        |
 | AGENT_IP     | Interface: Zabbix Agent IP address.                          |         | ✔        |
 | AGENT_DNS    | Interface: Zabbix Agent DNS name.                            |         | ✔        |
 | AGENT_PORT   | Interface: Zabbix Agent port.                                | 10050   | ✔        |

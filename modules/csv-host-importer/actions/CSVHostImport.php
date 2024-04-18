@@ -31,8 +31,10 @@ class CSVHostImport extends CAction {
 	// maximum length of a single CSV line
 	const CSV_MAX_LINE_LEN = 1024;
 
-	// character used to separate CSV fields
-	const CSV_SEPARATOR = ';';
+	// separator used for fields that can contain multiple elements
+	const ELEMENT_SEPARATOR = '|';
+	// separator used for elements that can have a value (tags)
+	const VALUE_SEPARATOR = '=';
 
 	// user-friendly messages for upload error codes
 	const UPLOAD_ERRORS = [
@@ -47,9 +49,11 @@ class CSVHostImport extends CAction {
 	];
 
 	private $csvColumns;
+	private $csvSeparators = [';', ',', "\t"];
 	private $hostlist = [];
 	private $hostcols = [];
 	private $step = 0;
+	private $separator;
 
 	/**
 	 * Initialize action. Method called by Zabbix core.
@@ -169,6 +173,7 @@ class CSVHostImport extends CAction {
 	protected function checkInput(): bool {
 		$fields = [
 			'step' => 'in 0,1,2',
+			'separator' => 'in 0,1,2',
 			'cancel' => 'string',
 		];
 
@@ -212,7 +217,7 @@ class CSVHostImport extends CAction {
 
 			if (($fp = fopen($path, 'r')) !== FALSE) {
 				// get first CSV line, which is the header
-				$header = fgetcsv($fp, self::CSV_MAX_LINE_LEN, self::CSV_SEPARATOR);
+				$header = fgetcsv($fp, self::CSV_MAX_LINE_LEN, $this->csvSeparators[$this->separator]);
 				if ($header === FALSE) {
 					error(_('Empty CSV file.'));
 					return false;
@@ -244,7 +249,7 @@ class CSVHostImport extends CAction {
 
 				// get all other records till the end of the file
 				$linenum = 1; // header was already read, so start at 1
-				while (($line = fgetcsv($fp, self::CSV_MAX_LINE_LEN, self::CSV_SEPARATOR)) !== FALSE) {
+				while (($line = fgetcsv($fp, self::CSV_MAX_LINE_LEN, $this->csvSeparators[$this->separator])) !== FALSE) {
 					$linenum++;
 					$column_count = count($line);
 					if ($column_count < $header_count) {
@@ -302,7 +307,7 @@ class CSVHostImport extends CAction {
 		}
 
 		if ($host['HOST_GROUPS'] !== '') {
-			$hostgroups = explode(',', $host['HOST_GROUPS']);
+			$hostgroups = explode(self::ELEMENT_SEPARATOR, $host['HOST_GROUPS']);
 			$zbxhostgroups = [];
 
 			foreach ($hostgroups as $hostgroup) {
@@ -330,7 +335,7 @@ class CSVHostImport extends CAction {
 		}
 
 		if ($host['HOST_TAGS'] !== '') {
-			$hosttags = explode(',', $host['HOST_TAGS']);
+			$hosttags = explode(self::ELEMENT_SEPARATOR, $host['HOST_TAGS']);
 			$zbxhost['tags'] = [];
 
 			foreach ($hosttags as $hosttag) {
@@ -338,11 +343,8 @@ class CSVHostImport extends CAction {
 					continue;
 				}
 
-				$tagname = '';
-				$tagvalue = '';
-
-				if (str_contains($hosttag, ':')) {
-					$tmp = explode(':', $hosttag, 2);
+				if (str_contains($hosttag, self::VALUE_SEPARATOR)) {
+					$tmp = explode(self::VALUE_SEPARATOR, $hosttag, 2);
 					$zbxhost['tags'][] = [
 						"tag" => $tmp[0],
 						"value" => $tmp[1],
@@ -371,7 +373,7 @@ class CSVHostImport extends CAction {
 		}
 
 		if ($host['TEMPLATES'] !== '') {
-			$templates = explode(',', $host['TEMPLATES']);
+			$templates = explode(self::ELEMENT_SEPARATOR, $host['TEMPLATES']);
 			$zbxtemplates = [];
 
 			foreach ($templates as $template) {
@@ -463,6 +465,12 @@ class CSVHostImport extends CAction {
 	protected function doAction() {
 		$tmpPath = sprintf("%s/ichi.hostlist.%d.csv", sys_get_temp_dir(), CWebUser::$data['userid']);
 
+		if ($this->hasInput('separator')) {
+			$this->separator = $this->getInput('separator');
+		} else {
+			$this->separator = 0;
+		}
+
 		if ($this->hasInput('step')) {
 			$this->step = intval($this->getInput('step')) & 3;
 		} else {
@@ -506,7 +514,8 @@ class CSVHostImport extends CAction {
 		$response = new CControllerResponseData([
 			'hostlist' => $this->hostlist,
 			'hostcols' => $this->hostcols,
-			'step' => $this->step
+			'step' => $this->step,
+			'separator' => $this->separator,
 		]);
 		$response->setTitle(_('Host CSV Importer'));
 		$this->setResponse($response);
