@@ -77,6 +77,7 @@ class CSVHostImport extends CAction {
             ['SNMP_DNS',            'SNMP DNS',                   '',         false],
             ['SNMP_PORT',           'SNMP port',                  '161',      false],
             ['SNMP_VERSION',        'SNMP version',               '',         false],
+			['SNMP_COMMUNITY',      'SNMP community',             '{$SNMP_COMMUNITY}', false],
             ['DESCRIPTION',         'Description',                '',         false],
             ['JMX_IP',              'JMX IP',                     '',         false],
             ['JMX_DNS',             'JMX DNS',                    '',         false],
@@ -422,7 +423,7 @@ class CSVHostImport extends CAction {
 				'port' => $host['SNMP_PORT'] !== '' ? intval($host['SNMP_PORT']) : 161,
 				'details' => [
 					'version' => $host['SNMP_VERSION'] !== '' ? intval($host['SNMP_VERSION']) : 1,
-					'community' => '{$SNMP_COMMUNITY}'
+					'community' => $host['SNMP_COMMUNITY']
 				]
 			];
 		}
