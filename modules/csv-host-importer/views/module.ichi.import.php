@@ -52,7 +52,9 @@ switch ($step) {
         );
 
         $button_name = 'Preview';
-        $other_buttons[] = (new CRedirectButton(_('Example'), (new CUrl('zabbix.php'))->setArgument('action', 'ichi.example')));
+
+        $example_url = (new CUrl('zabbix.php'))->setArgument('action', 'ichi.example');
+        $other_buttons[] = (new CSimpleButton(_('Example')))->onClick("document.location = " . json_encode($example_url->getUrl()) . " + '&separator=' + jQuery('input[name=separator]').val()");
 
         $step++;
         break;

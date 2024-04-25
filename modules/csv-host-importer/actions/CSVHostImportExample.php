@@ -18,13 +18,12 @@ declare(strict_types = 1);
 namespace Modules\ICHI\Actions;
 
 use CControllerResponseData;
-use CController as CAction;
 use CRoleHelper;
 
 /**
  * Host CSV importer example page action.
  */
-class CSVHostImportExample extends CAction {
+class CSVHostImportExample extends CSVHostImportAction {
 
 	/**
 	 * Initialize action. Method called by Zabbix core.
@@ -50,7 +49,13 @@ class CSVHostImportExample extends CAction {
 	 * @return bool true on success, false on error.
 	 */
 	protected function checkInput(): bool {
-		return true;
+		$fields = [
+			'separator' => 'in 0,1,2',
+		];
+
+		$ret = $this->validateInput($fields);
+
+		return $ret;
 	}
 
 	/**
@@ -69,7 +74,15 @@ class CSVHostImportExample extends CAction {
 	 * @return void
 	 */
 	protected function doAction() {
-		$response = new CControllerResponseData([]);
+		if ($this->hasInput('separator')) {
+			$separator = $this->getInput('separator');
+		} else {
+			$separator = 0;
+		}
+
+		$response = new CControllerResponseData([
+			'separator' => $this->csvSeparators[$separator],
+		]);
 		$this->setResponse($response);
 	}
 }

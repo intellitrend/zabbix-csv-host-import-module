@@ -18,7 +18,6 @@ declare(strict_types = 1);
 namespace Modules\ICHI\Actions;
 
 use CControllerResponseData;
-use CController as CAction;
 use CRoleHelper;
 use API;
 use CWebUser;
@@ -26,7 +25,7 @@ use CWebUser;
 /**
  * Host CSV importer module action.
  */
-class CSVHostImport extends CAction {
+class CSVHostImport extends CSVHostImportAction {
 
 	// maximum length of a single CSV line
 	const CSV_MAX_LINE_LEN = 1024;
@@ -49,7 +48,6 @@ class CSVHostImport extends CAction {
 	];
 
 	private $csvColumns;
-	private $csvSeparators = [';', ',', "\t"];
 	private $hostlist = [];
 	private $hostcols = [];
 	private $step = 0;
