@@ -22,13 +22,17 @@ use CRoleHelper;
 use API;
 use CWebUser;
 
+function startsWith($haystack, $needle ) {
+	return substr($haystack, 0, strlen($needle)) === $needle;
+}
+
 /**
  * Host CSV importer module action.
  */
 class CSVHostImport extends CSVHostImportAction {
 
 	// maximum length of a single CSV line
-	const CSV_MAX_LINE_LEN = 1024;
+	const CSV_MAX_LINE_LEN = 8192;
 
 	// separator used for fields that can contain multiple elements
 	const ELEMENT_SEPARATOR = '|';
@@ -59,97 +63,97 @@ class CSVHostImport extends CSVHostImportAction {
 	 * @return void
 	 */
 	public function init(): void {
-         // define CSV columns
+		 // define CSV columns
 		 $this->csvColumns = [
-            // Technical name       Friendly name             Default     Required
-            ['NAME',                'Name',                       '',         true],
-            ['VISIBLE_NAME',        'Visible name',               '',         false],
-            ['HOST_GROUPS',         'Host groups',                '',         true],
-            ['HOST_TAGS',           'Host tags',                  '',         false],
-            ['PROXY',               'Proxy',                      '',         false],
-            ['TEMPLATES',           'Templates',                  '',         false],
-            ['AGENT_IP',            'Agent IP',                   '',         false],
-            ['AGENT_DNS',           'Agent DNS',                  '',         false],
-            ['AGENT_PORT',          'Agent port',                 '10050',    false],
-            ['SNMP_IP',             'SNMP IP',                    '',         false],
-            ['SNMP_DNS',            'SNMP DNS',                   '',         false],
-            ['SNMP_PORT',           'SNMP port',                  '161',      false],
-            ['SNMP_VERSION',        'SNMP version',               '',         false],
-			['SNMP_COMMUNITY',      'SNMP community',             '{$SNMP_COMMUNITY}', false],
-            ['DESCRIPTION',         'Description',                '',         false],
-            ['JMX_IP',              'JMX IP',                     '',         false],
-            ['JMX_DNS',             'JMX DNS',                    '',         false],
-            ['JMX_PORT',            'JMX port',                   '12345',    false],
-            ['ALIAS',               'Alias',                      '',         false],
-            ['ASSET_TAG',           'Asset tag',                  '',         false],
-            ['CHASSIS',             'Chassis',                    '',         false],
-            ['CONTACT',             'Contact person',             '',         false],
-            ['CONTRACT_NUMBER',     'Contract number',            '',         false],
-            ['DATE_HW_DECOMM',      'HW decommissioning date',    '',         false],
-            ['DATE_HW_EXPIRY',      'HW maintenance expiry date', '',         false],
-            ['DATE_HW_INSTALL',     'HW installation date',       '',         false],
-            ['DATE_HW_PURCHASE',    'HW purchase date',           '',         false],
-            ['DEPLOYMENT_STATUS',   'Deployment status',          '',         false],
-            ['HARDWARE',            'Hardware',                   '',         false],
-            ['HARDWARE_FULL',       'Detailed hardware',          '',         false],
-            ['HOST_NETMASK',        'Host subnet mask',           '',         false],
-            ['HOST_NETWORKS',       'Host networks',              '',         false],
-            ['HOST_ROUTER',         'Host router',                '',         false],
-            ['HW_ARCH',             'HW architecture',            '',         false],
-            ['INSTALLER_NAME',      'Installer name',             '',         false],
-            ['LOCATION',            'Location',                   '',         false],
-            ['LOCATION_LAT',        'Location latitude',          '',         false],
-            ['LOCATION_LON',        'Location longitude',         '',         false],
-            ['MACADDRESS_A',        'MAC address A',              '',         false],
-            ['MACADDRESS_B',        'MAC address B',              '',         false],
-            ['MODEL',               'Model',                      '',         false],
-            ['NAME',                'Name',                       '',         false],
-            ['NOTES',               'Notes',                      '',         false],
-            ['OOB_IP',              'OOB IP address',             '',         false],
-            ['OOB_NETMASK',         'OOB host subnet mask',       '',         false],
-            ['OOB_ROUTER',          'OOB router',                 '',         false],
-            ['OS',                  'OS name',                    '',         false],
-            ['OS_FULL',             'Detailed OS name',           '',         false],
-            ['OS_SHORT',            'Short OS name',              '',         false],
-            ['POC_1_CELL',          'Primary POC mobile number',  '',         false],
-            ['POC_1_EMAIL',         'Primary email',              '',         false],
-            ['POC_1_NAME',          'Primary POC name',           '',         false],
-            ['POC_1_NOTES',         'Primary POC notes',          '',         false],
-            ['POC_1_PHONE_A',       'Primary POC phone A',        '',         false],
-            ['POC_1_PHONE_B',       'Primary POC phone B',        '',         false],
-            ['POC_1_SCREEN',        'Primary POC screen name',    '',         false],
-            ['POC_2_CELL',          'Secondary POC mobile number','',         false],
-            ['POC_2_EMAIL',         'Secondary POC email',        '',         false],
-            ['POC_2_NAME',          'Secondary POC name',         '',         false],
-            ['POC_2_NOTES',         'Secondary POC notes',        '',         false],
-            ['POC_2_PHONE_A',       'Secondary POC phone A',      '',         false],
-            ['POC_2_PHONE_B',       'Secondary POC phone B',      '',         false],
-            ['POC_2_SCREEN',        'Secondary POC screen name',  '',         false],
-            ['SERIALNO_A',          'Serial number A',            '',         false],
-            ['SERIALNO_B',          'Serial number B',            '',         false],
-            ['SITE_ADDRESS_A',      'Site address A',             '',         false],
-            ['SITE_ADDRESS_B',      'Site address B',             '',         false],
-            ['SITE_ADDRESS_C',      'Site address C',             '',         false],
-            ['SITE_CITY',           'Site city',                  '',         false],
-            ['SITE_COUNTRY',        'Site country',               '',         false],
-            ['SITE_NOTES',          'Site notes',                 '',         false],
-            ['SITE_RACK',           'Site rack location',         '',         false],
-            ['SITE_STATE',          'Site state',                 '',         false],
-            ['SITE_ZIP',            'Site ZIP/postal code',       '',         false],
-            ['SOFTWARE',            'Software',                   '',         false],
-            ['SOFTWARE_APP_A',      'Software application A',     '',         false],
-            ['SOFTWARE_APP_B',      'Software application B',     '',         false],
-            ['SOFTWARE_APP_C',      'Software application C',     '',         false],
-            ['SOFTWARE_APP_D',      'Software application D',     '',         false],
-            ['SOFTWARE_APP_E',      'Software application E',     '',         false],
-            ['SOFTWARE_FULL',       'Software details',           '',         false],
-            ['TAG',                 'Tag',                        '',         false],
-            ['TYPE',                'Type',                       '',         false],
-            ['TYPE_FULL',           'Type details',               '',         false],
-            ['URL_A',               'URL A',                      '',         false],
-            ['URL_B',               'URL B',                      '',         false],
-            ['URL_C',               'URL C',                      '',         false],
-            ['VENDOR',              'Vendor',                     '',         false],
+			// Technical name			Friendly name						Default	Required
+			['NAME',					'Name',							'',		true],
+			['VISIBLE_NAME',			'Visible name',					'',		false],
+			['HOST_GROUPS',				'Host groups',					'',		true],
+			['HOST_TAGS',				'Host tags',					'',		false],
+			['PROXY',					'Proxy',						'',		false],
+			['TEMPLATES',				'Templates',					'',		false],
+			['AGENT_IP',				'Agent IP',						'',		false],
+			['AGENT_DNS',				'Agent DNS',					'',		false],
+			['AGENT_PORT',				'Agent port',					'10050',	false],
+			['SNMP_IP',					'SNMP IP',						'',		false],
+			['SNMP_DNS',				'SNMP DNS',						'',		false],
+			['SNMP_PORT',				'SNMP port',					'161',		false],
+			['SNMP_VERSION',			'SNMP version',					'',		false],
+			['SNMP_COMMUNITY',			'SNMP community',				'{$SNMP_COMMUNITY}', false],
+			['DESCRIPTION',				'Description',					'',		false],
+			['JMX_IP',					'JMX IP',						'',		false],
+			['JMX_DNS',					'JMX DNS',						'',		false],
+			['JMX_PORT',				'JMX port',						'12345',	false],
+			['INV_ALIAS',				'Alias',						'',		false],
+			['INV_ASSET_TAG',			'Asset tag',					'',		false],
+			['INV_CHASSIS',				'Chassis',						'',		false],
+			['INV_CONTACT',				'Contact person',				'',		false],
+			['INV_CONTRACT_NUMBER',		'Contract number',				'',		false],
+			['INV_DATE_HW_DECOMM',		'HW decommissioning date',		'',		false],
+			['INV_DATE_HW_EXPIRY',		'HW maintenance expiry date', 	'',		false],
+			['INV_DATE_HW_INSTALL',		'HW installation date',			'',		false],
+			['INV_DATE_HW_PURCHASE',	'HW purchase date',				'',		false],
+			['INV_DEPLOYMENT_STATUS',	'Deployment status',			'',		false],
+			['INV_HARDWARE',			'Hardware',						'',		false],
+			['INV_HARDWARE_FULL',		'Detailed hardware',			'',		false],
+			['INV_HOST_NETMASK',		'Host subnet mask',				'',		false],
+			['INV_HOST_NETWORKS',		'Host networks',				'',		false],
+			['INV_HOST_ROUTER',			'Host router',					'',		false],
+			['INV_HW_ARCH',				'HW architecture',				'',		false],
+			['INV_INSTALLER_NAME',		'Installer name',				'',		false],
+			['INV_LOCATION',			'Location',						'',		false],
+			['INV_LOCATION_LAT',		'Location latitude',			'',		false],
+			['INV_LOCATION_LON',		'Location longitude',			'',		false],
+			['INV_MACADDRESS_A',		'MAC address A',				'',		false],
+			['INV_MACADDRESS_B',		'MAC address B',				'',		false],
+			['INV_MODEL',				'Model',						'',		false],
+			['INV_NAME',				'Name',							'',		false],
+			['INV_NOTES',				'Notes',						'',		false],
+			['INV_OOB_IP',				'OOB IP address',				'',		false],
+			['INV_OOB_NETMASK',			'OOB host subnet mask',			'',		false],
+			['INV_OOB_ROUTER',			'OOB router',					'',		false],
+			['INV_OS',					'OS name',						'',		false],
+			['INV_OS_FULL',				'Detailed OS name',				'',		false],
+			['INV_OS_SHORT',			'Short OS name',				'',		false],
+			['INV_POC_1_CELL',			'Primary POC mobile number',	'',		false],
+			['INV_POC_1_EMAIL',			'Primary email',				'',		false],
+			['INV_POC_1_NAME',			'Primary POC name',				'',		false],
+			['INV_POC_1_NOTES',			'Primary POC notes',			'',		false],
+			['INV_POC_1_PHONE_A',		'Primary POC phone A',			'',		false],
+			['INV_POC_1_PHONE_B',		'Primary POC phone B',			'',		false],
+			['INV_POC_1_SCREEN',		'Primary POC screen name',		'',		false],
+			['INV_POC_2_CELL',			'Secondary POC mobile number',	'',		false],
+			['INV_POC_2_EMAIL',			'Secondary POC email',			'',		false],
+			['INV_POC_2_NAME',			'Secondary POC name',			'',		false],
+			['INV_POC_2_NOTES',			'Secondary POC notes',			'',		false],
+			['INV_POC_2_PHONE_A',		'Secondary POC phone A',		'',		false],
+			['INV_POC_2_PHONE_B',		'Secondary POC phone B',		'',		false],
+			['INV_POC_2_SCREEN',		'Secondary POC screen name',	'',		false],
+			['INV_SERIALNO_A',			'Serial number A',				'',		false],
+			['INV_SERIALNO_B',			'Serial number B',				'',		false],
+			['INV_SITE_ADDRESS_A',		'Site address A',				'',		false],
+			['INV_SITE_ADDRESS_B',		'Site address B',				'',		false],
+			['INV_SITE_ADDRESS_C',		'Site address C',				'',		false],
+			['INV_SITE_CITY',			'Site city',					'',		false],
+			['INV_SITE_COUNTRY',		'Site country',					'',		false],
+			['INV_SITE_NOTES',			'Site notes',					'',		false],
+			['INV_SITE_RACK',			'Site rack location',			'',		false],
+			['INV_SITE_STATE',			'Site state',					'',		false],
+			['INV_SITE_ZIP',			'Site ZIP/postal code',			'',		false],
+			['INV_SOFTWARE',			'Software',						'',		false],
+			['INV_SOFTWARE_APP_A',		'Software application A',		'',		false],
+			['INV_SOFTWARE_APP_B',		'Software application B',		'',		false],
+			['INV_SOFTWARE_APP_C',		'Software application C',		'',		false],
+			['INV_SOFTWARE_APP_D',		'Software application D',		'',		false],
+			['INV_SOFTWARE_APP_E',		'Software application E',		'',		false],
+			['INV_SOFTWARE_FULL',		'Software details',				'',		false],
+			['INV_TAG',					'Tag',							'',		false],
+			['INV_TYPE',				'Type',							'',		false],
+			['INV_TYPE_FULL',			'Type details',					'',		false],
+			['INV_URL_A',				'URL A',						'',		false],
+			['INV_URL_B',				'URL B',						'',		false],
+			['INV_URL_C',				'URL C',						'',		false],
+			['INV_VENDOR',				'Vendor',						'',		false],
 		];
 
 		/**
@@ -356,6 +360,14 @@ class CSVHostImport extends CSVHostImportAction {
 			}
 		}
 
+		$zbxhost['inventory'] = [];
+		foreach ($host as $key => $value) {
+			if (startsWith($key, 'INV_') && $value !== '') {
+				$invKey = strtolower(substr($key, 4));
+				$zbxhost['inventory'][$invKey] = $value;
+			}
+		}
+
 		if ($host['PROXY'] !== '') {
 			$zbxproxy = API::Proxy()->get([
 				'output' => ['proxyid'],
@@ -456,7 +468,7 @@ class CSVHostImport extends CSVHostImportAction {
 		unset($host);
 	}
 
-    /**
+	/**
 	 * Prepare the response object for the view. Method called by Zabbix core.
 	 *
 	 * @return void
@@ -518,6 +530,6 @@ class CSVHostImport extends CSVHostImportAction {
 		]);
 		$response->setTitle(_('Host CSV Importer'));
 		$this->setResponse($response);
-    }
+	}
 }
 ?>
