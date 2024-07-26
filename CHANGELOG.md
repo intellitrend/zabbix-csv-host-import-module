@@ -3,7 +3,7 @@
 ## Version 6.3.0
 
 * Support for Zabbix 6.4 and 7.0.
-* Added support for host tags and macros (`HOST_TAGS`, `HOST_TAGS`).
+* Added support for host tags and macros (`HOST_TAGS`, `HOST_MACROS`).
 * Added support for inventory fields (`INV_*`).
 * Added support for SNMP community string (`SNMP_COMMUNITY`).
 * Added support for additional CSV separators: comma and tabulator
