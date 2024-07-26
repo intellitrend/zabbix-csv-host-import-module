@@ -1,0 +1,2 @@
+NAME;HOST_GROUPS;HOST_TAGS
+example_tags;First host group;First tag|Second tag=with value|Third tag=Equals=allowed|Empty tag=

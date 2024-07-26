@@ -1,0 +1,2 @@
+NAME;       VISIBLE_NAME; HOST_GROUPS;         SNMP_IP;    SNMP_DNS;   SNMP_VERSION;   SNMP_COMMUNITY
+example_snmp;  Test SNMP;    First host group;    127.0.0.1;  localhost;  2;              TestCommunityString

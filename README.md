@@ -14,7 +14,7 @@ You can find the latest versions for the respective Zabbix releases on the [Gith
 
 ## Requirements
 
-- Zabbix 6.0, 6.2 or 6.4
+- Zabbix 6.0, 6.2, 6.4 or 7.0
 - File write access to the Zabbix frontend server
 - Super admin permissions for the Zabbix users that want to use the frontend module
 
@@ -24,7 +24,7 @@ For Debian and Ubuntu server, the Zabbix Frontend modules are usually placed in 
 
 Copy the folder `modules/csv-host-importer` to `/usr/share/zabbix/modules/csv-host-importer` on the Zabbix frontend web server.
 
-**Note:** If you're using Zabbix 6.4, you'll need to remove `manifest.json` and rename `manifest.v2.json` to `manifest.json`.
+**Note:** If you're using Zabbix 6.2 or 6.0, you'll need to remove `manifest.json` and rename `manifest.v1.json` to `manifest.json`.
 
 Then go to `Administration`, `General`, `Modules`, click `Scan directory` and enable the new module in the list.
 
@@ -38,6 +38,8 @@ NAME;VISIBLE_NAME;HOST_GROUPS;TEMPLATES;AGENT_IP;AGENT_DNS;SNMP_IP;SNMP_DNS;SNMP
 example1;Example Host Agent;First host group, second host group;Linux by Zabbix agent;127.0.0.1;localhost;;;;Example Zabbix Agent host
 example2;Example Host SNMP;Third host group;Generic by SNMP;;;127.0.0.1;localhost;2;Example SNMPv2 host
 ```
+
+You can find more specific examples in the [examples directory](./examples/).
 
 The following CSV columns are supported:
 
@@ -136,7 +138,7 @@ Additional hints:
 
 * The columns are case-insensitive, so ``NAME``, ``name`` and ``NaMe`` are all valid.
 * The columns must be in the first line of the CSV file.
-* The separator character must be ";".
+* The separator character must be the same as in the import dialog and can either be a semicolon, comma or a tabulator.
 
 The CSV file can then be imported in the same menu entry. You get a chance to preview the host list before the actual import.
 

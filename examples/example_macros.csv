@@ -1,0 +1,2 @@
+NAME;HOST_GROUPS;HOST_MACROS
+example_macros;First host group;{$EMPTY_MACRO}|{$FIRST_MACRO}=with value|{$SECOND_MACRO}=Equals=allowed
