@@ -70,6 +70,7 @@ class CSVHostImport extends CSVHostImportAction {
 			['VISIBLE_NAME',			'Visible name',					'',		false],
 			['HOST_GROUPS',				'Host groups',					'',		true],
 			['HOST_TAGS',				'Host tags',					'',		false],
+			['HOST_MACROS',				'Host macros',					'',		false],
 			['PROXY',					'Proxy',						'',		false],
 			['TEMPLATES',				'Templates',					'',		false],
 			['AGENT_IP',				'Agent IP',						'',		false],
@@ -349,12 +350,36 @@ class CSVHostImport extends CSVHostImportAction {
 				if (str_contains($hosttag, self::VALUE_SEPARATOR)) {
 					$tmp = explode(self::VALUE_SEPARATOR, $hosttag, 2);
 					$zbxhost['tags'][] = [
-						"tag" => $tmp[0],
-						"value" => $tmp[1],
+						'tag' => $tmp[0],
+						'value' => $tmp[1],
 					];
 				} else {
 					$zbxhost['tags'][] = [
-						"tag" => $hosttag,
+						'tag' => $hosttag,
+					];
+				}
+			}
+		}
+
+		if ($host['HOST_MACROS'] !== '') {
+			$hostmacros = explode(self::ELEMENT_SEPARATOR, $host['HOST_MACROS']);
+			$zbxhost['macros'] = [];
+
+			foreach ($hostmacros as $hostmacro) {
+				if ($hostmacro === '') {
+					continue;
+				}
+
+				if (str_contains($hostmacro, self::VALUE_SEPARATOR)) {
+					$tmp = explode(self::VALUE_SEPARATOR, $hostmacro, 2);
+					$zbxhost['macros'][] = [
+						'macro' => $tmp[0],
+						'value' => $tmp[1],
+					];
+				} else {
+					$zbxhost['macros'][] = [
+						'macro' => $hostmacro,
+						'value' => '',
 					];
 				}
 			}
