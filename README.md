@@ -30,7 +30,7 @@ Then go to `Administration`, `General`, `Modules`, click `Scan directory` and en
 
 ## Usage
 
-Once the frontend module is activated, a new menu entry `Host CSV Importer` should appear under `Configuration`.
+Once the frontend module is activated, a new menu entry `Host CSV Importer` should appear under `Configuration` (6.0, 6.2) or `Data collection` (6.4+).
 
 Here's an example of two hosts: the first one with Zabbix agent and another with an SNMPv2 agent:
 ```
