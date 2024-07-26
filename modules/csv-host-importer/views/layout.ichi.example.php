@@ -13,9 +13,8 @@
   * However you must not change author and copyright information.
   */
 
-// header('Content-Type: text/csv');
-// header('Content-Disposition: attachment; filename="hosts_example.csv"');
-header('Content-Type: text/plain');
+header('Content-Type: text/csv');
+header('Content-Disposition: attachment; filename="hosts_example.csv"');
 
 if (substr(ZABBIX_VERSION, 0, 3) == '6.0') {
   $template = 'Generic SNMP';
