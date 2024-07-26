@@ -1,6 +1,18 @@
 # Changelog
 
+## Version 6.3.0
+
+* Support for Zabbix 6.4 and 7.0.
+* Added support for host tags and macros (`HOST_TAGS`, `HOST_TAGS`).
+* Added support for inventory fields (`INV_*`).
+* Added support for SNMP community string (`SNMP_COMMUNITY`).
+* Added support for additional CSV separators: comma and tabulator
+* Example CSV now automatically uses the template name of the current Zabbix version.
+* Fixed visible host names being required.
+* Fixed incorrect check for missing host groups.
+
 ## Version 6.2.1
+
 * Fixed JMX port not being set correctly on the host
 
 ## Version 6.2.0
