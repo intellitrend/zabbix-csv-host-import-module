@@ -81,7 +81,15 @@ class CSVHostImport extends CSVHostImportAction {
 			['SNMP_DNS',				'SNMP DNS',						'',		false],
 			['SNMP_PORT',				'SNMP port',					'161',		false],
 			['SNMP_VERSION',			'SNMP version',					'',		false],
+			['SNMP_BULK',				'SNMP bulk mode',				'1',		false],
 			['SNMP_COMMUNITY',			'SNMP community',				'{$SNMP_COMMUNITY}', false],
+			['SNMP_V3SECNAME',			'SNMPv3 security name',			'',		false],
+			['SNMP_V3SECLEVEL',			'SNMPv3 security level',			'',		false],
+			['SNMP_V3AUTHPASSPHRASE',	'SNMPv3 authentication passphrase',	'',		false],
+			['SNMP_V3PRIVPASSPHRASE',	'SNMPv3 privacy passphrase',		'',		false],
+			['SNMP_V3AUTHPROTOCOL',		'SNMPv3 authentication protocol',	'',		false],
+			['SNMP_V3PRIVPROTOCOL',		'SNMPv3 privacy protocol',		'',		false],
+			['SNMP_V3CONTEXTNAME',		'SNMPv3 context name',			'',		false],			
 			['DESCRIPTION',				'Description',					'',		false],
 			['JMX_IP',					'JMX IP',						'',		false],
 			['JMX_DNS',					'JMX DNS',						'',		false],
@@ -490,7 +498,7 @@ class CSVHostImport extends CSVHostImportAction {
 			];
 		}
 
-		if ($host['SNMP_IP'] !== '' || $host['SNMP_DNS'] !== '') {
+		if (($host['SNMP_IP'] !== '' || $host['SNMP_DNS'] !== '') && $host['SNMP_VERSION'] !== '3') {
 			$zbxinterfaces[] = [
 				'type' => 2,
 				'dns' => $host['SNMP_DNS'],
@@ -500,10 +508,36 @@ class CSVHostImport extends CSVHostImportAction {
 				'port' => $host['SNMP_PORT'] !== '' ? intval($host['SNMP_PORT']) : 161,
 				'details' => [
 					'version' => $host['SNMP_VERSION'] !== '' ? intval($host['SNMP_VERSION']) : 1,
+					'bulk' => $host['SNMP_BULK'] !== '' ? intval($host['SNMP_BULK']) : 1,
 					'community' => $host['SNMP_COMMUNITY']
 				]
 			];
 		}
+
+		if (($host['SNMP_IP'] !== '' || $host['SNMP_DNS'] !== '') && ($host['SNMP_VERSION'] == '3')) {
+			$zbxinterfaces[] = [
+				'type' => 2,
+				'dns' => $host['SNMP_DNS'],
+				'ip' => $host['SNMP_IP'],
+				'main' => 1,
+				'useip' => $host['SNMP_IP'] !== '' ? 1 : 0,
+				'port' => $host['SNMP_PORT'] !== '' ? intval($host['SNMP_PORT']) : 161,
+				'details' => [
+					'version' => intval($host['SNMP_VERSION']),
+					'bulk' => $host['SNMP_BULK'] !== '' ? intval($host['SNMP_BULK']) : 1,
+					'securityname' => $host['SNMP_V3SECNAME'],
+					'securitylevel' => intval($host['SNMP_V3SECLEVEL']),
+					'authpassphrase' => $host['SNMP_V3AUTHPASSPHRASE'],
+					'privpassphrase' => $host['SNMP_V3PRIVPASSPHRASE'],
+					'authprotocol' => intval($host['SNMP_V3AUTHPROTOCOL']),
+					'privprotocol' => intval($host['SNMP_V3PRIVPROTOCOL']),
+					'contextname' => $host['SNMP_V3CONTEXTNAME']
+				]
+			];
+		}
+
+
+
 
 		if ($host['JMX_IP'] !== '' || $host['JMX_DNS'] !== '') {
 			$zbxinterfaces[] = [
