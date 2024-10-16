@@ -83,6 +83,7 @@ class CSVHostImport extends CSVHostImportAction {
 			['SNMP_VERSION',			'SNMP version',					'',		false],
 			['SNMP_BULK',				'SNMP bulk mode',				'1',		false],
 			['SNMP_COMMUNITY',			'SNMP community',				'{$SNMP_COMMUNITY}', false],
+			['SNMP_MAXREP',				'SNMP max repetitions',			'10',	false],
 			['SNMP_V3SECNAME',			'SNMPv3 security name',			'',		false],
 			['SNMP_V3SECLEVEL',			'SNMPv3 security level',			'',		false],
 			['SNMP_V3AUTHPASSPHRASE',	'SNMPv3 authentication passphrase',	'',		false],
@@ -509,7 +510,8 @@ class CSVHostImport extends CSVHostImportAction {
 				'details' => [
 					'version' => $host['SNMP_VERSION'] !== '' ? intval($host['SNMP_VERSION']) : 1,
 					'bulk' => $host['SNMP_BULK'] !== '' ? intval($host['SNMP_BULK']) : 1,
-					'community' => $host['SNMP_COMMUNITY']
+					'community' => $host['SNMP_COMMUNITY'],
+					'max_repetitions' => $host['SNMP_MAXREP'] !== '' ? intval($host['SNMP_MAXREP']) : 10
 				]
 			];
 		}
@@ -525,6 +527,7 @@ class CSVHostImport extends CSVHostImportAction {
 				'details' => [
 					'version' => intval($host['SNMP_VERSION']),
 					'bulk' => $host['SNMP_BULK'] !== '' ? intval($host['SNMP_BULK']) : 1,
+					'max_repetitions' => $host['SNMP_MAXREP'] !== '' ? intval($host['SNMP_MAXREP']) : 10,
 					'securityname' => $host['SNMP_V3SECNAME'],
 					'securitylevel' => intval($host['SNMP_V3SECLEVEL']),
 					'authpassphrase' => $host['SNMP_V3AUTHPASSPHRASE'],
@@ -535,9 +538,6 @@ class CSVHostImport extends CSVHostImportAction {
 				]
 			];
 		}
-
-
-
 
 		if ($host['JMX_IP'] !== '' || $host['JMX_DNS'] !== '') {
 			$zbxinterfaces[] = [
