@@ -72,6 +72,7 @@ class CSVHostImport extends CSVHostImportAction {
 			['HOST_TAGS',				'Host tags',					'',		false],
 			['HOST_MACROS',				'Host macros',					'',		false],
 			['PROXY',					'Proxy',						'',		false],
+			['PROXY_GROUP',				'Proxy Group',						'',		false],
 			['TEMPLATES',				'Templates',					'',		false],
 			['AGENT_IP',				'Agent IP',						'',		false],
 			['AGENT_DNS',				'Agent DNS',					'',		false],
@@ -298,6 +299,9 @@ class CSVHostImport extends CSVHostImportAction {
 	}
 
 	private function importHost($host): int {
+		// Get the current API version
+		$api_version = API::APIInfo()->version([]);
+
 		$zbxhost = [
 			'host' => $host['NAME']
 		];
@@ -394,19 +398,57 @@ class CSVHostImport extends CSVHostImportAction {
 		}
 
 		if ($host['PROXY'] !== '') {
-			$zbxproxy = API::Proxy()->get([
-				'output' => ['proxyid'],
-				'filter' => ['host' => $host['PROXY']],
-				'limit' => 1
-			]);
-
-			if ($zbxproxy) {
-				$zbxhost['proxy_hostid'] = $zbxproxy[0]['proxyid'];
+			if ($api_version >= '7.0') {
+				$zbxproxy = API::Proxy()->get([
+					'output' => ['proxyid'],
+					'filter' => ['name' => $host['PROXY']],
+					'limit' => 1
+				]);
+	
+				if ($zbxproxy) {
+					$zbxhost['proxyid'] = $zbxproxy[0]['proxyid'];
+					$zbxhost['monitored_by'] = 1; // PROXY 
+				} else {
+					error(_s('Proxy "%1$s" on host "%2$s" not found.', $host['PROXY'], $host['NAME']));
+					return -1;
+				}
 			} else {
-				error(_s('Proxy "%1$s" on host "%2$s" not found.', $host['PROXY'], $host['NAME']));
-				return -1;
+				$zbxproxy = API::Proxy()->get([
+					'output' => ['proxyid'],
+					'filter' => ['host' => $host['PROXY']],
+					'limit' => 1
+				]);
+	
+				if ($zbxproxy) {
+					$zbxhost['proxy_hostid'] = $zbxproxy[0]['proxyid'];
+				} else {
+					error(_s('Proxy "%1$s" on host "%2$s" not found.', $host['PROXY'], $host['NAME']));
+					return -1;
+				}
 			}
 		}
+
+		if ($host['PROXY_GROUP'] !== '') {
+			if ($api_version >= '7.0') {
+				$zbxproxygroup = API::ProxyGroup()->get([
+					'output' => ['proxy_groupid'],
+					'filter' => ['name' => $host['PROXY_GROUP']],
+					'limit' => 1
+				]);
+				if ($zbxproxygroup) {
+						$zbxhost['proxy_groupid'] = $zbxproxygroup[0]['proxy_groupid'];
+						$zbxhost['monitored_by'] = 2; // PROXY_GROUP 
+				} else {
+						error(_s('Proxy Group "%1$s" on host "%2$s" not found.', $host['PROXY_GROUP'], $host['NAME']));
+						return -1;
+				}
+			} else {
+					error(_s('Proxy Groups supported on API v7 and above. Cant add proxy group "%1$s" on host "%2$s" ', $host['PROXY_GROUP'], $host['NAME']));
+					return -1;
+				}
+		}
+		
+
 
 		if ($host['TEMPLATES'] !== '') {
 			$templates = explode(self::ELEMENT_SEPARATOR, $host['TEMPLATES']);
