@@ -33,6 +33,7 @@ Then go to `Administration`, `General`, `Modules`, click `Scan directory` and en
 Once the frontend module is activated, a new menu entry `Host CSV Importer` should appear under `Configuration` (6.0, 6.2) or `Data collection` (6.4+).
 
 Here's an example of two hosts: the first one with Zabbix agent and another with an SNMPv2 agent:
+
 ```
 NAME;VISIBLE_NAME;HOST_GROUPS;TEMPLATES;AGENT_IP;AGENT_DNS;SNMP_IP;SNMP_DNS;SNMP_VERSION;DESCRIPTION
 example1;Example Host Agent;First host group, second host group;Linux by Zabbix agent;127.0.0.1;localhost;;;;Example Zabbix Agent host
@@ -51,7 +52,9 @@ The following CSV columns are supported:
 | HOST_TAGS             | List of host tags, separated by a '\|'. The tag format can be either be ``tag name`` (empty value) or ``tag name=tag value``. |          |✔|
 | HOST_MACROS           | List of host macros, separated by a '\|'. The macro format can be either be ``{$MACRONAME}`` (empty value) or ``{$MACRONAME}=macro value``. |          |✔|
 | PROXY                 | Name of the proxy that should monitor the host.              |                                                              | ✔        |
-| TEMPLATES             | List of template names to assign to the host, separated by a '\|'. Templates must exist with the specified name.             |          |✔|
+| PROXY_GROUP           | Name of the proxy group that should monitor the host. (from Zabbix 7.0)  |                                                              | ✔        |
+| STATUS                | Host enable status  0 - (default) monitored host 1 - unmonitored host. | 0                                                  |  ✔       |
+| TEMPLATES             | List of template names to assign to the host, separated by a '\|'. Templates must exist with the specified name.            |          |✔|
 | AGENT_IP              | Interface: Zabbix Agent IP address.                          |                                                              | ✔        |
 | AGENT_DNS             | Interface: Zabbix Agent DNS name.                            |                                                              | ✔        |
 | AGENT_PORT            | Interface: Zabbix Agent port.                                | 10050                                                        | ✔        |
@@ -59,7 +62,16 @@ The following CSV columns are supported:
 | SNMP_DNS              | Interface: SNMP DNS name.                                    |                                                              | ✔        |
 | SNMP_PORT             | Interface: SNMP port.                                        | 161                                                          | ✔        |
 | SNMP_VERSION          | Interface: SNMP version number (1, 2 or 3).                  |                                                              | ✔        |
+| SNMP_BULK             | Interface: SNMP Whether to use bulk SNMP requests.  0 - don't use bulk requests, 1 - use  |1                                | ✔        |
 | SNMP_COMMUNITY        | Interface: SNMP community string.                            | {$SNMP_COMMUNITY}                                            | ✔        |
+| SNMP_MAXREP           | Interface: SNMP max repetitions.                             | 10                                                           | ✔        |
+| SNMP_V3SECNAME        | Interface: SNMPv3 security name.                             |                                                              | ✔        |
+| SNMP_V3SECLEVEL        | Interface: SNMPv3 security level.                           |                                                              | ✔        |
+| SNMP_V3AUTHPASSPHRASE           | Interface: SNMPv3 authentication passphrase        |                                                              | ✔        |
+| SNMP_V3PRIVPASSPHRASE        | Interface: SNMPv3 privacy passphrase                  |                                                              | ✔        |
+| SNMP_V3AUTHPROTOCOL        | Interface: SNMPv3 authentication protocol               |                                                              | ✔        |
+| SNMP_V3PRIVPROTOCOL        | Interface: SNMPv3 privacy protocol                      |                                                              | ✔        |
+| SNMP_V3CONTEXTNAME        | Interface: SNMPv3 context name                           |                                                              | ✔        |
 | JMX_IP                | Interface: JMX IP address.                                   |                                                              | ✔        |
 | JMX_DNS               | Interface: JMX DNS name.                                     |                                                              | ✔        |
 | JMX_PORT              | Interface: JMX port.                                         | 12345                                                        | ✔        |
@@ -137,9 +149,8 @@ The following CSV columns are supported:
 
 Additional hints:
 
-* The columns are case-insensitive, so ``NAME``, ``name`` and ``NaMe`` are all valid.
-* The columns must be in the first line of the CSV file.
-* The separator character must be the same as in the import dialog and can either be a semicolon, comma or a tabulator.
+- The columns are case-insensitive, so ``NAME``, ``name`` and ``NaMe`` are all valid.
+- The columns must be in the first line of the CSV file.
+- The separator character must be the same as in the import dialog and can either be a semicolon, comma or a tabulator.
 
 The CSV file can then be imported in the same menu entry. You get a chance to preview the host list before the actual import.
-
