@@ -73,6 +73,7 @@ class CSVHostImport extends CSVHostImportAction {
 			['HOST_MACROS',				'Host macros',					'',		false],
 			['PROXY',					'Proxy',						'',		false],
 			['PROXY_GROUP',				'Proxy Group',						'',		false],
+			['STATUS',					'Host enabled status' ,			'0',		false],
 			['TEMPLATES',				'Templates',					'',		false],
 			['AGENT_IP',				'Agent IP',						'',		false],
 			['AGENT_DNS',				'Agent DNS',					'',		false],
@@ -457,7 +458,9 @@ class CSVHostImport extends CSVHostImportAction {
 				}
 		}
 		
-
+		if ($host['STATUS'] !== '') {
+			$zbxhost['status'] = $host['STATUS'] !== '' ? intval($host['STATUS']) : 0;
+		}
 
 		if ($host['TEMPLATES'] !== '') {
 			$templates = explode(self::ELEMENT_SEPARATOR, $host['TEMPLATES']);
