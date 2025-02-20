@@ -231,6 +231,12 @@ class CSVHostImport extends CSVHostImportAction {
 			$this->hostcols = [];
 
 			if (($fp = fopen($path, 'r')) !== FALSE) {
+				// check for BOM
+				if (fgets($fp, 4) !== "\xef\xbb\xbf") {
+					// BOM not found - rewind pointer to start of file
+					rewind($fp);
+				}
+
 				// get first CSV line, which is the header
 				$header = fgetcsv($fp, self::CSV_MAX_LINE_LEN, $this->csvSeparators[$this->separator]);
 				if ($header === FALSE) {
