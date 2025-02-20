@@ -41,7 +41,7 @@ switch ($step) {
             (new CLabel(_('CSV File'), 'csv_file'))->setAsteriskMark(),
             (new CFile('csv_file'))
                 ->setWidth(ZBX_TEXTAREA_STANDARD_WIDTH)
-                ->setAriaRequired(),
+                ->setAriaRequired()
         );
         $form_list->addRow(
             (new CLabel(_('CSV Separator'), 'separator')),
