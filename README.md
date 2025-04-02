@@ -20,9 +20,9 @@ You can find the latest versions for the respective Zabbix releases on the [Gith
 
 ## Installation
 
-For Debian and Ubuntu server, the Zabbix Frontend modules are usually placed in ``/usr/share/zabbix/modules/`` (up to Zabbix 7.0) or ``/usr/share/zabbix/modules/ui/`` (Zabbix 7.2 and newer).
+For Debian and Ubuntu server, the Zabbix Frontend modules are usually placed in ``/usr/share/zabbix/modules/`` (up to Zabbix 7.0) or ``/usr/share/zabbix/ui/modules/`` (Zabbix 7.2 and newer).
 
-Copy the folder `modules/csv-host-importer` to `/usr/share/zabbix/modules/csv-host-importer` or `/usr/share/zabbix/modules/ui/csv-host-importer` on the Zabbix frontend web server, depending on the Zabbix version.
+Copy the folder `modules/csv-host-importer` to `/usr/share/zabbix/modules/csv-host-importer` or `/usr/share/zabbix/ui/modules/csv-host-importer` on the Zabbix frontend web server, depending on the Zabbix version.
 
 **Note:** If you're using Zabbix 6.2 or 6.0, you'll need to remove `manifest.json` and rename `manifest.v1.json` to `manifest.json`.
 
