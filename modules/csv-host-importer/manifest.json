@@ -3,7 +3,7 @@
 	"id": "intellitrend_csv_host_importer",
 	"type": "module",
 	"name": "CSV Host Importer",
-	"version": "6.3.0",
+	"version": "7.0.0",
 	"namespace": "ICHI",
 	"author": "IntelliTrend GmbH",
 	"url": "https://www.intellitrend.de/",

@@ -238,7 +238,7 @@ class CSVHostImport extends CSVHostImportAction {
 				}
 
 				// get first CSV line, which is the header
-				$header = fgetcsv($fp, self::CSV_MAX_LINE_LEN, $this->csvSeparators[$this->separator]);
+				$header = fgetcsv($fp, self::CSV_MAX_LINE_LEN, $this->csvSeparators[$this->separator], '"', '');
 				if ($header === FALSE) {
 					error(_('Empty CSV file.'));
 					return false;
@@ -270,7 +270,7 @@ class CSVHostImport extends CSVHostImportAction {
 
 				// get all other records till the end of the file
 				$linenum = 1; // header was already read, so start at 1
-				while (($line = fgetcsv($fp, self::CSV_MAX_LINE_LEN, $this->csvSeparators[$this->separator])) !== FALSE) {
+				while (($line = fgetcsv($fp, self::CSV_MAX_LINE_LEN, $this->csvSeparators[$this->separator], '"', '')) !== FALSE) {
 					$linenum++;
 					$column_count = count($line);
 					if ($column_count < $header_count) {

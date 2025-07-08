@@ -14,7 +14,7 @@ You can find the latest versions for the respective Zabbix releases on the [Gith
 
 ## Requirements
 
-- Zabbix 6.0, 6.2, 6.4 or 7.0
+- Zabbix 6.0, 6.2, 6.4, 7.0, 7.2, 7.4
 - File write access to the Zabbix frontend server
 - Super admin permissions for the Zabbix users that want to use the frontend module
 
@@ -50,6 +50,7 @@ The following CSV columns are supported:
 | HOST_GROUPS           | List of host group names, separated by a '\|'. Missing host groups are created automatically. (required) |                   |
 | HOST_TAGS             | List of host tags, separated by a '\|'. The tag format can be either be ``tag name`` (empty value) or ``tag name=tag value``. |                   |
 | HOST_MACROS           | List of host macros, separated by a '\|'. The macro format can be either be ``{$MACRONAME}`` (empty value) or ``{$MACRONAME}=macro value``. |                   |
+| STATUS                | Host status (0 = monitored, 1 = disabled)                    | 0                 |
 | PROXY                 | Name of the proxy that should monitor the host.              |                   |
 | PROXY_GROUP           | Name of the proxy group assigned to the host. (Zabbix 7+)     |                   |
 | TEMPLATES             | List of template names to assign to the host, separated by a '\|'. Templates must exist with the specified name. |                   |

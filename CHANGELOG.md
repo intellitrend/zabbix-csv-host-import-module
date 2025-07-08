@@ -1,5 +1,11 @@
 # Changelog
 
+## Version 7.0.0
+
+* Improved support for Zabbix 7.2 and 7.4.
+* Added support for host status using `STATUS`.
+* Fixed PHP warning with fgetcsv.
+
 ## Version 6.3.0
 
 * Support for Zabbix 6.4 and 7.0.

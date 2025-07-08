@@ -122,7 +122,10 @@ switch ($step) {
                 ->addStyle('min-width: 10em;')
                 ->addClass('table-col-handle'),
         ]);
-    
+
+        // 7.2+ uses popup dialogs
+        $use_popup = version_compare(ZABBIX_VERSION, '7.2.0', '>=');
+
         foreach ($hostlist as $row) {
             $hostid = $row['HOSTID'];
 
@@ -131,11 +134,15 @@ switch ($step) {
             $cols[] = new CCol($row['VISIBLE_NAME'] ?? '');
 
             if ($hostid != -1) {
+                $url = (new CUrl('zabbix.php'))->setArgument('hostid', $hostid);
+                if ($use_popup) {
+                    $url->setArgument('action', 'popup')
+                        ->setArgument('popup', 'host.edit');
+                } else {
+                    $url->setArgument('action', 'host.edit');
+                }
                 $cols[] = new CCol(
-                    new CLink('Created', (new CUrl('zabbix.php'))
-                        ->setArgument('action', 'host.edit')
-                        ->setArgument('hostid', $hostid)
-                    )
+                    new CLink('Created', $url)
                 );
             } else {
                 $cols[] = (new CCol('Error'))->addClass(ZBX_STYLE_RED);
